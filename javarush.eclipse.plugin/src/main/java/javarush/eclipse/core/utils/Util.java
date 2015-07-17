@@ -79,7 +79,7 @@ public class Util {
     public static boolean isVersionEclipse3x() {
         if (mVersion == null) {
             mVersion = getVersion("eclipse.buildId");
-            if (mVersion == null)
+            if (mVersion == 0)
                 mVersion = getVersion("osgi.framework.version");
         }
         return 3 == mVersion;
@@ -90,7 +90,8 @@ public class Util {
             String ver = System.getProperty(key);
             if (ver != null) {
                 String v[] = ver.split("\\.");
-                if (v.length != 0)
+                if (v.length != 0 && v[0].charAt(0) >= '0'
+                    && v[0].charAt(0) <= '9')
                     return Integer.valueOf(v[0]);
                 return 0;
             }
