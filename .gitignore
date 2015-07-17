@@ -2,16 +2,5 @@
 /.project
 .settings
 .project
-/javarush.eclipse.feature/target
-/javarush.eclipse.plugin/target
 .classpath
-/javarush.eclipse.site/target
-/javarush.eclipse.test/target
-/javarush.eclipse.ws/target/*.xml
-/javarush.eclipse.ws/target/*.jar
-/javarush.eclipse.ws/target/*.MF
-/javarush.eclipse.ws/target/*.properties
-/javarush.eclipse.ws/target/classes
-/javarush.eclipse.ws/target/jaxws
-/javarush.eclipse.ws/target/maven-archiver
-/javarush.eclipse.ws/target/sourcebundle-l10n-gen
+target
