@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Javarush-Eclipse WS Plugin
+Bundle-SymbolicName: javarush.eclipse.ws;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: javarush.eclipse.ws.client
+Bundle-ClassPath: .

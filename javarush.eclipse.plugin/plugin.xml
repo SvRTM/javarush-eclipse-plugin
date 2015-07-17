@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+<!--
+#######################################################################################
+#    Javarush Plugin Commands                                                         #
+#######################################################################################
+-->
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="%category.javarush.name"
+            description="%category.javarush.description"
+            id="javarush.eclipse.commands" />
+      <command
+            categoryId="javarush.eclipse.commands"
+            description="%command.CheckTaskAction.description"
+            id="javarush.eclipse.actions.CheckTaskAction"
+            name="%command.CheckTaskAction.name"/>
+      <command
+            categoryId="javarush.eclipse.commands"
+            description="%command.TaskListAction.description"
+            id="javarush.eclipse.actions.TaskListAction"
+            name="%command.TaskListAction.name"/>
+   </extension>
+
+
+<!--
+#######################################################################################
+#    Action Sets (Toolbar & Main Menu)                                                #
+#######################################################################################
+-->
+
+<!-- Menu -->
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="true"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar id="javarush.eclipse.toolbar.main" label="%page.name">
+            <command
+                  commandId="javarush.eclipse.actions.CheckTaskAction"
+                  icon="icons/buuf/task-check.png"
+                  label="%command.label.0"
+                  style="push">
+                  <visibleWhen
+                        checkEnabled="false">
+                     <with variable="activeEditorId">
+                        <equals value="org.eclipse.jdt.ui.CompilationUnitEditor"/>
+                     </with>
+                  </visibleWhen>
+            </command>
+            <command
+                  commandId="javarush.eclipse.actions.TaskListAction"
+                  icon="icons/buuf/task-receive.png"
+                  label="%command.label.1"
+                  style="push"/>
+         </toolbar>
+      </menuContribution>
+
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu??after=Run">
+            <menu label="%menu.label" >
+            <command
+                  commandId="javarush.eclipse.actions.CheckTaskAction"
+                  icon="icons/buuf/task-check.png"
+                  id="checkTask">
+                  <visibleWhen
+                        checkEnabled="false">
+                     <with variable="activeEditorId">
+                        <equals value="org.eclipse.jdt.ui.CompilationUnitEditor"/>
+                     </with>
+                  </visibleWhen>
+            </command>
+            <command
+                  commandId="javarush.eclipse.actions.TaskListAction"
+                  icon="icons/buuf/task-receive.png"
+                  id="taskList"
+                  tooltip="%command.tooltip"/>
+         </menu>
+      </menuContribution>
+   </extension>
+
+
+<!--
+#######################################################################################
+#    View                                                                             #
+#######################################################################################
+-->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="JavarushEclipse"
+            id="view">
+      </category>
+      <view
+            name="Task list View"
+            icon="icons/buuf/task-view.png"
+            category="view"
+            class="javarush.eclipse.ui.view.TaskListView"
+            id="javarush.eclipse.ui.view.TaskListView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <view
+               ratio="0.5"
+               relative="org.eclipse.ui.views.ProblemView"
+               relationship="stack"
+               id="javarush.eclipse.ui.view.TaskListView">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+<!--
+#######################################################################################
+#    Content Types                                                                    #
+#######################################################################################
+-->
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            commandId="javarush.eclipse.actions.CheckTaskAction"
+            class="javarush.eclipse.ui.action.CheckTaskHandler"/>
+      <handler
+            commandId="javarush.eclipse.actions.TaskListAction"
+            class="javarush.eclipse.ui.action.TaskListHandler"/>
+   </extension>
+
+
+   <extension
+         point="org.eclipse.ui.preferencePages">
+         <page
+               class="javarush.eclipse.ui.preferences.MainPrefPage"
+               id="Javarush.eclipse.preferencePages.Main"
+               name="%page.name">
+         </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+         <initializer
+            class="javarush.eclipse.ui.preferences.PreferencesInitializer">
+         </initializer>
+   </extension>
+
+</plugin>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <parent>
+    <artifactId>javarush.eclipse</artifactId>
+    <groupId>javarush-eclipse-plugin</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>javarush.eclipse.ws</artifactId>
+  <packaging>eclipse-plugin</packaging>
+
+  <name>javarush.eclipse :: ws</name>
+  <description>javarush.eclipse WS Plugin</description>
+
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-rt</artifactId>
+    </dependency>
+  </dependencies>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>${jaxws-maven-plugin}</version>
+        <executions>
+          <execution>
+            <id>wsimport-generate-wsJavaRush</id>
+            <phase>generate-sources</phase>
+
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+            <configuration>
+              <packageName>javarush.eclipse.ws.client</packageName>
+              <wsdlUrls>
+                <wsdlUrl>http://javarush.ru/api/api1/JarCommonService?WSDL</wsdlUrl>
+              </wsdlUrls>
+              <sourceDestDir>
+                ${project.build.directory}/generated-sources/jaxws-wsimport
+              </sourceDestDir>
+              <xnocompile>false</xnocompile>
+              <extension>true</extension>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
