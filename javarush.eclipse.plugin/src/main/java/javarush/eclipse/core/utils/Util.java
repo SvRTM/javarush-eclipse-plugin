@@ -6,9 +6,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import javarush.eclipse.JavarushEclipsePlugin;
-import javarush.eclipse.exceptions.SystemException;
-
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -20,6 +17,9 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
+
+import javarush.eclipse.JavarushEclipsePlugin;
+import javarush.eclipse.exceptions.SystemException;
 
 public class Util {
     private static Integer mVersion = null;
@@ -78,10 +78,27 @@ public class Util {
 
     public static boolean isVersionEclipse3x() {
         if (mVersion == null) {
-            String v[] = System.getProperty("osgi.framework.version").split(
-                    "\\.");
-            mVersion = Integer.valueOf(v[0]);
+            mVersion = getVersion("eclipse.buildId");
+            if (mVersion == null)
+                mVersion = getVersion("osgi.framework.version");
         }
         return 3 == mVersion;
+    }
+
+    private static Integer getVersion(String key) {
+        try {
+            String ver = System.getProperty(key);
+            if (ver != null) {
+                String v[] = ver.split("\\.");
+                if (v.length != 0)
+                    return Integer.valueOf(v[0]);
+                return 0;
+            }
+        }
+        catch (Exception e) {
+            JavarushEclipsePlugin.logError(e);
+        }
+
+        return 0;
     }
 }
