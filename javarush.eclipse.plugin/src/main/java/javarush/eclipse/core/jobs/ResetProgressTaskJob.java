@@ -32,6 +32,8 @@ public class ResetProgressTaskJob extends AJob {
 
             monitor.subTask(Messages.monitor_Authorization);
             String sessionId = authorize();
+            if (monitor.isCanceled())
+                return Status.CANCEL_STATUS;
             monitor.worked(50);
 
             IJarCommonService client = new JarCommonService()
@@ -46,6 +48,8 @@ public class ResetProgressTaskJob extends AJob {
                         .fromValue(res.getErrorCode()).getDescription());
             monitor.worked(50);
             showMsg();
+
+            return Status.OK_STATUS;
         }
         catch (Exception e) {
             return JavarushEclipsePlugin.status(e);
@@ -53,8 +57,6 @@ public class ResetProgressTaskJob extends AJob {
         finally {
             monitor.done();
         }
-
-        return Status.OK_STATUS;
     }
 
     private void showMsg() {

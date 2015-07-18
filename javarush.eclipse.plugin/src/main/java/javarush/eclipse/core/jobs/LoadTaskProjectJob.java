@@ -52,6 +52,8 @@ public class LoadTaskProjectJob extends AJob {
             if (ServiceResultErrorCode.SUCCESS != res.getErrorCode())
                 throw new SystemException(_ServiceResultErrorCode.UNKNOWN_ERROR
                         .fromValue(res.getErrorCode()).getDescription());
+            if (monitor.isCanceled())
+                return Status.CANCEL_STATUS;
             monitor.worked(33);
 
             final List<ClassDataInfo> classDatas = res.getResult().getValue()
@@ -72,6 +74,8 @@ public class LoadTaskProjectJob extends AJob {
             if (mainCu != null)
                 openInEditor(mainCu);
             monitor.worked(34);
+
+            return Status.OK_STATUS;
         }
         catch (final Exception e) {
             return JavarushEclipsePlugin.status(e);
@@ -79,8 +83,6 @@ public class LoadTaskProjectJob extends AJob {
         finally {
             monitor.done();
         }
-
-        return Status.OK_STATUS;
     }
 
     private boolean isContainMainMethod(final ICompilationUnit cu)

@@ -43,6 +43,8 @@ public class TaskListJob extends AJob {
 
             monitor.subTask(Messages.monitor_Authorization);
             final String sessionId = authorize();
+            if (monitor.isCanceled())
+                return Status.CANCEL_STATUS;
             monitor.worked(25);
 
             final IJarCommonService client = getClient();
@@ -55,6 +57,8 @@ public class TaskListJob extends AJob {
                 throw new SystemException(_ServiceResultErrorCode.UNKNOWN_ERROR
                         .fromValue(unreadMessages.getErrorCode())
                         .getDescription());
+            if (monitor.isCanceled())
+                return Status.CANCEL_STATUS;
             monitor.worked(25);
 
             final int countMessages = unreadMessages.getResult().intValue();
@@ -73,6 +77,8 @@ public class TaskListJob extends AJob {
 
             final List<TaskInfo> taskInfos = unresolvedTasks.getResult()
                     .getValue().getResult();
+            if (monitor.isCanceled())
+                return Status.CANCEL_STATUS;
             monitor.worked(25);
 
             monitor.subTask(Messages.monitor_TaskList_sortingTasks);
@@ -104,12 +110,16 @@ public class TaskListJob extends AJob {
                 task.setTaskName(MessageFormat.format("{0}.{1}{2}{3}", taskInfo
                         .getLevel(), taskInfo.getLesson(),
                         TaskInfoType.BONUS == taskInfo.getType() ? " bonus "
-                                                                : ".", taskInfo
-                                .getNumber()));
+                                                                 : ".",
+                        taskInfo.getNumber()));
+                if (monitor.isCanceled())
+                    return Status.CANCEL_STATUS;
             }
             monitor.worked(25);
 
             ui(taskBeans);
+
+            return Status.OK_STATUS;
         }
         catch (final Exception e) {
             return JavarushEclipsePlugin.status(e);
@@ -117,8 +127,6 @@ public class TaskListJob extends AJob {
         finally {
             monitor.done();
         }
-
-        return Status.OK_STATUS;
     }
 
     private void ui(final TaskBean[] taskBeans) {

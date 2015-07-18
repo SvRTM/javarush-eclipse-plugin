@@ -53,6 +53,8 @@ public class CheckTaskJob extends AJob {
 
             monitor.subTask(Messages.monitor_Authorization);
             final String sessionId = authorize();
+            if (monitor.isCanceled())
+                return Status.CANCEL_STATUS;
             monitor.worked(25);
 
             final IJarCommonService client = new JarCommonService()
@@ -62,17 +64,19 @@ public class CheckTaskJob extends AJob {
             final String[] taskNumber = new String[1];
             final List<ClassDataInfo> classDatas = new ArrayList<ClassDataInfo>();
             prepareData(taskNumber, classDatas, monitor);
+            if (monitor.isCanceled())
+                return Status.CANCEL_STATUS;
             monitor.worked(25);
 
             monitor.subTask(Messages.monitor_CheckTask_sentOnCheck);
-
-            final ServiceResultOfValidationInfo res = client.validateForPlugin(
-                    sessionId, taskNumber[0], classDatas);
+            final ServiceResultOfValidationInfo res = client
+                    .validateForPlugin(sessionId, taskNumber[0], classDatas);
 
             if (ServiceResultErrorCode.SUCCESS != res.getErrorCode())
                 throw new SystemException(_ServiceResultErrorCode.UNKNOWN_ERROR
                         .fromValue(res.getErrorCode()).getDescription());
-
+            if (monitor.isCanceled())
+                return Status.CANCEL_STATUS;
             monitor.worked(50);
 
             final ValidateInfo validateInfo = res.getResult();
@@ -106,6 +110,8 @@ public class CheckTaskJob extends AJob {
                     Messages.title_CheckTask_wellDone, message);
 
             reloadTaskList();
+
+            return Status.OK_STATUS;
         }
         catch (final Exception e) {
             return JavarushEclipsePlugin.status(e);
@@ -113,8 +119,6 @@ public class CheckTaskJob extends AJob {
         finally {
             monitor.done();
         }
-
-        return Status.OK_STATUS;
     }
 
     private void prepareData(final String[] taskNumber,
