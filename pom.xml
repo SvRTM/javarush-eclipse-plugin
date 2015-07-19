@@ -23,8 +23,8 @@
     <jaxws-rt.version>2.2.10</jaxws-rt.version>
     <webservices-api.version>2.0.1</webservices-api.version>
 
-    <tycho.version>0.23.0</tycho.version>
-    <tycho.extras.version>0.23.0</tycho.extras.version>
+    <tycho.version>0.23.1</tycho.version>
+    <tycho.extras.version>0.23.1</tycho.extras.version>
 
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m</tycho.test.jvmArgs>
