@@ -35,6 +35,12 @@
         <groupId>org.jvnet.jax-ws-commons</groupId>
         <artifactId>jaxws-maven-plugin</artifactId>
         <version>${jaxws-maven-plugin}</version>
+        <configuration>
+          <!-- Needed with JAXP 1.5 -->
+          <vmArgs>
+            <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+          </vmArgs>
+        </configuration>
         <executions>
           <execution>
             <id>wsimport-generate-wsJavaRush</id>
