@@ -2,24 +2,6 @@ package javarush.eclipse.ui.view;
 
 import java.text.MessageFormat;
 
-import javarush.eclipse.JavarushEclipsePlugin;
-import javarush.eclipse.Messages;
-import javarush.eclipse.core.Constants;
-import javarush.eclipse.core.beans.TaskBean;
-import javarush.eclipse.core.beans.TaskBean.NotActiveTasks;
-import javarush.eclipse.core.jobs.LoadTaskProjectJob;
-import javarush.eclipse.core.jobs.ResetProgressTaskJob;
-import javarush.eclipse.core.utils.WorkspaceUtil;
-import javarush.eclipse.exceptions.BaseException;
-import javarush.eclipse.exceptions.BusinessException;
-import javarush.eclipse.exceptions.SystemException;
-import javarush.eclipse.ui.view.listeners.ListenerBuilder;
-import javarush.eclipse.ui.view.listeners.ListenerTooltipBuilder;
-import javarush.eclipse.ui.view.providers.ConditionColumnProvider;
-import javarush.eclipse.ui.view.providers.RewardColumnProvider;
-import javarush.eclipse.ui.view.providers.TeacherColumnProvider;
-import javarush.eclipse.ui.view.providers.TypeColumnProvider;
-
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -28,7 +10,6 @@ import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -46,6 +27,25 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
+
+import javarush.eclipse.JavarushEclipsePlugin;
+import javarush.eclipse.Messages;
+import javarush.eclipse.core.Constants;
+import javarush.eclipse.core.beans.TaskBean;
+import javarush.eclipse.core.beans.TaskBean.NotActiveTasks;
+import javarush.eclipse.core.jobs.LoadTaskProjectJob;
+import javarush.eclipse.core.jobs.ResetProgressTaskJob;
+import javarush.eclipse.core.utils.ImageUtils;
+import javarush.eclipse.core.utils.WorkspaceUtil;
+import javarush.eclipse.exceptions.BaseException;
+import javarush.eclipse.exceptions.BusinessException;
+import javarush.eclipse.exceptions.SystemException;
+import javarush.eclipse.ui.view.listeners.ListenerBuilder;
+import javarush.eclipse.ui.view.listeners.ListenerTooltipBuilder;
+import javarush.eclipse.ui.view.providers.ConditionColumnProvider;
+import javarush.eclipse.ui.view.providers.RewardColumnProvider;
+import javarush.eclipse.ui.view.providers.TeacherColumnProvider;
+import javarush.eclipse.ui.view.providers.TypeColumnProvider;
 
 public class TaskListView extends ViewPart implements Constants {
     /**
@@ -82,7 +82,8 @@ public class TaskListView extends ViewPart implements Constants {
         TableViewerColumn col = createTableColumn(
                 Messages.table_TaskList_typeColumn, 80);
         col.setLabelProvider(new TypeColumnProvider(this, tableViewer));
-        col = createTableColumn(Messages.table_TaskList_teacherColumn, 0 /* 80 */);
+        col = createTableColumn(Messages.table_TaskList_teacherColumn,
+                0 /* 80 */);
         col.setLabelProvider(new TeacherColumnProvider(tableViewer));
         col = createTableColumn(Messages.table_TaskList_conditionColumn, 710);
         col.setLabelProvider(new ConditionColumnProvider(tableViewer));
@@ -96,8 +97,8 @@ public class TaskListView extends ViewPart implements Constants {
         table.setLinesVisible(true);
         table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-        table.addListener(SWT.Selection, new ListenerBuilder.SelectionListener(
-                this));
+        table.addListener(SWT.Selection,
+                new ListenerBuilder.SelectionListener(this));
         table.getColumn(0).setResizable(false);
         table.getColumn(1).setResizable(false);
         table.getColumn(3).setResizable(false);
@@ -124,13 +125,11 @@ public class TaskListView extends ViewPart implements Constants {
 
     private TableViewerColumn createTableColumn(final String title,
                                                 final int bound) {
-        final TableViewerColumn tableColumn = new TableViewerColumn(
-                tableViewer, SWT.NONE);
+        final TableViewerColumn tableColumn = new TableViewerColumn(tableViewer,
+                SWT.NONE);
         final TableColumn column = tableColumn.getColumn();
         column.setText(title);
         column.setWidth(bound);
-        // column.setResizable(false);
-        // column.setMoveable(true);
         column.setAlignment(SWT.CENTER);
         return tableColumn;
     }
@@ -209,8 +208,8 @@ public class TaskListView extends ViewPart implements Constants {
                         throw new BusinessException(
                                 Messages.error_TaskList_emptyKeyTask);
 
-                    final String url = MessageFormat.format(URL_ASK_HELP, data
-                            .getTaskKey().replaceAll(",", "."));
+                    final String url = MessageFormat.format(URL_ASK_HELP,
+                            data.getTaskKey().replaceAll(",", "."));
                     WorkspaceUtil.openWebPage(url);
                 }
                 catch (Exception e) {
@@ -249,8 +248,8 @@ public class TaskListView extends ViewPart implements Constants {
             public void run() {
                 resetTable();
                 try {
-                    WorkspaceUtil.getHandlerService().executeCommand(
-                            BTN_CHECK_TASK, null);
+                    WorkspaceUtil.getHandlerService()
+                            .executeCommand(BTN_CHECK_TASK, null);
                 }
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
@@ -260,16 +259,16 @@ public class TaskListView extends ViewPart implements Constants {
             }
         };
         checkTaskAction.setToolTipText(Messages.toolbox_TaskList_checkTask);
-        checkTaskAction.setImageDescriptor(ImageDescriptor
-                .createFromImage(iconCheckTask));
+        checkTaskAction.setImageDescriptor(
+                ImageUtils.getImageDescriptor(iconCheckTask));
 
         taskListAction = new Action(Messages.toolbox_TaskList_taskList) {
             @Override
             public void run() {
                 try {
                     resetTable();
-                    WorkspaceUtil.getHandlerService().executeCommand(
-                            BTN_TASK_LIST, null);
+                    WorkspaceUtil.getHandlerService()
+                            .executeCommand(BTN_TASK_LIST, null);
                 }
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
@@ -279,8 +278,8 @@ public class TaskListView extends ViewPart implements Constants {
             }
         };
         taskListAction.setToolTipText(Messages.toolbox_TaskList_taskList);
-        taskListAction.setImageDescriptor(ImageDescriptor
-                .createFromImage(iconTaskListReceive));
+        taskListAction.setImageDescriptor(
+                ImageUtils.getImageDescriptor(iconTaskListReceive));
 
         doubleClickAction = new Action() {
             @Override

@@ -1,23 +1,21 @@
 package javarush.eclipse.ui.view.providers;
 
-import javarush.eclipse.core.beans.TaskBean;
-import javarush.eclipse.core.beans.TaskBean.TaskStatus;
-import javarush.eclipse.core.utils.Util;
-
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.TextLayout;
 import org.eclipse.swt.graphics.TextStyle;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+
+import javarush.eclipse.core.beans.TaskBean;
+import javarush.eclipse.core.beans.TaskBean.TaskStatus;
+import javarush.eclipse.core.utils.Util;
 
 public class ConditionColumnProvider extends AOwnerDrawLabelProvider {
     private static final int TEXT_MARGIN = 3;
+    private static final int HEIGHT_ROW_FOR_ECLIPSE_3X = 100;
 
     public ConditionColumnProvider(TableViewer tableViewer) {
         super(tableViewer);
@@ -38,8 +36,9 @@ public class ConditionColumnProvider extends AOwnerDrawLabelProvider {
 
         final Point size = event.gc.textExtent(text);
         event.width = size.x + 2 * TEXT_MARGIN;
-        event.height = Util.isVersionEclipse3x() ? 100 : Math.max(event.height,
-                size.y + TEXT_MARGIN);
+        event.height = Util.isVersionEclipse3x() ? HEIGHT_ROW_FOR_ECLIPSE_3X
+                                                 : Math.max(event.height,
+                                                         size.y + TEXT_MARGIN);
     }
 
     //
@@ -59,20 +58,13 @@ public class ConditionColumnProvider extends AOwnerDrawLabelProvider {
 
         TaskBean data = (TaskBean) element;
 
-        StringBuilder sb = new StringBuilder("[" + data.getTaskName() + "] "
-                                             + data.getTitle());
+        StringBuilder sb = new StringBuilder(
+                "[" + data.getTaskName() + "] " + data.getTitle());
         int titleLen = sb.length();
 
-        Display display = getDisplay();
-        TextLayout layout = setDefaultTextLayout(event);
-
-        Font font = JFaceResources.getFontRegistry().getBold(
-                JFaceResources.DEFAULT_FONT);
-        FontData fontData = font.getFontData()[0];
-        fontData.setHeight(fontData.getHeight() + 2);
-        Font newFont = new Font(display, fontData);
-        TextStyle titleStyle = new TextStyle(newFont,
-                display.getSystemColor(SWT.COLOR_LIST_FOREGROUND), null);
+        Font font = Util.defaultBoldFont();
+        TextStyle titleStyle = createTextStyle(Util.addHeightFont(2, font),
+                getSystemColor(SWT.COLOR_LIST_FOREGROUND));
         titleStyle.underline = true;
 
         TaskStatus status = data.getStatus();
@@ -80,29 +72,22 @@ public class ConditionColumnProvider extends AOwnerDrawLabelProvider {
         TextStyle statusStyle = null;
         int statusLen = 0;
         if (TaskStatus.ASSIGNED != status) {
-            fontData = font.getFontData()[0];
-            fontData.setHeight(fontData.getHeight() + 1);
-            Integer fg = status.getForeground(), bg = status.getBackground();
-            statusStyle = new TextStyle(new Font(display, fontData),
-                    fg == null ? null : display.getSystemColor(fg),
-                    bg == null ? null : display.getSystemColor(bg));
+            statusStyle = createTextStyle(Util.addHeightFont(1, font),
+                    getSystemColor(status.getForeground()),
+                    getSystemColor(status.getBackground()));
             statusStyle.borderStyle = SWT.BORDER_DASH;
 
             sb.append("\n        ").append(status.getText()).append("        ");
             statusLen = sb.length() - titleLen;
         }
-        // TextStyle plain = new TextStyle(
-        // JFaceResources.getFont(JFaceResources.DEFAULT_FONT),
-        // display.getSystemColor(SWT.COLOR_LIST_FOREGROUND), null);
 
         sb.append("\n   ").append(data.getDescription());
 
+        TextLayout layout = createDefaultTextLayout(event);
         layout.setText(sb.toString());
         layout.setStyle(titleStyle, 0, titleLen - 1);
         if (TaskStatus.ASSIGNED != status)
             layout.setStyle(statusStyle, titleLen, titleLen + statusLen - 1);
-        // layout.setStyle(plain, titleLen + restrLen, sb.length() - 1);
-        // layout.setWrapIndent(1);
         layout.draw(event.gc, event.x, event.y);
         layout.dispose();
     }

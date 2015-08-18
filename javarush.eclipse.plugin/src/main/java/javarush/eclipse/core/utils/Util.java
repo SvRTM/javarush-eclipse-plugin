@@ -2,21 +2,12 @@ package javarush.eclipse.core.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.exceptions.SystemException;
@@ -26,6 +17,14 @@ public class Util {
 
     public static boolean isEmpty(final String str) {
         return str == null || str.isEmpty();
+    }
+
+    public static Display getDisplay() {
+        Display display = Display.getCurrent();
+        // may be null if outside the UI thread
+        if (display == null)
+            display = Display.getDefault();
+        return display;
     }
 
     public static String convertStreamToString(final InputStream is) {
@@ -39,35 +38,15 @@ public class Util {
         }
     }
 
-    public static Image getResourceImage(final String file) {
-        final Bundle bundle = FrameworkUtil.getBundle(Util.class);
-        final URL url = FileLocator.find(bundle, new Path("icons/" + file),
-                null);
-        final ImageDescriptor image = ImageDescriptor.createFromURL(url);
-        return image.createImage();
+    public static Font defaultBoldFont() {
+        return JFaceResources.getFontRegistry()
+                .getBold(JFaceResources.DEFAULT_FONT);
     }
 
-    private static Map<Integer, Image> cache = new HashMap<Integer, Image>(3);
-
-    public static Image resizeImage(final Image image, final int width,
-                                    final int height) {
-        if (image == null)
-            return null;
-
-        final int hash = image.hashCode();
-        Image scaled = cache.get(hash);
-        if (scaled != null)
-            return scaled;
-
-        scaled = new Image(Display.getDefault(), width, height);
-        final GC gc = new GC(scaled);
-        gc.setInterpolation(SWT.HIGH);
-        final Rectangle rect = image.getBounds();
-        gc.drawImage(image, 0, 0, rect.width, rect.height, 0, 0, width, height);
-        gc.dispose();
-        cache.put(hash, scaled);
-
-        return scaled;
+    public static FontData addHeightFont(int height, Font font) {
+        FontData fontData = font.getFontData()[0];
+        fontData.setHeight(fontData.getHeight() + height);
+        return fontData;
     }
 
     public static String getPrefProjectName() {

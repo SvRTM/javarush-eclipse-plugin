@@ -32,7 +32,7 @@
 #######################################################################################
 -->
 
-<!-- Menu -->
+<!-- Toolbar -->
    <extension point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="true"
@@ -41,7 +41,7 @@
             <command
                   commandId="javarush.eclipse.actions.CheckTaskAction"
                   icon="icons/buuf/task-check.png"
-                  label="%command.label.0"
+                  label="%command.label.check_task"
                   style="push">
                   <visibleWhen
                         checkEnabled="false">
@@ -53,11 +53,12 @@
             <command
                   commandId="javarush.eclipse.actions.TaskListAction"
                   icon="icons/buuf/task-receive.png"
-                  label="%command.label.1"
+                  label="%command.label.task_list"
                   style="push"/>
          </toolbar>
       </menuContribution>
 
+<!-- Menu -->
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu??after=Run">
             <menu label="%menu.label" >
@@ -76,7 +77,14 @@
                   commandId="javarush.eclipse.actions.TaskListAction"
                   icon="icons/buuf/task-receive.png"
                   id="taskList"
-                  tooltip="%command.tooltip"/>
+                  tooltip="%command.tooltip.task_list"/>
+            <separator
+                name="separator-id"
+                visible="true" />
+            <command
+                  commandId="javarush.eclipse.actions.UserInfoAction"
+                  icon="icons/buuf/user.png"
+                  label="%command.label.user_info"/>
          </menu>
       </menuContribution>
    </extension>
@@ -127,6 +135,9 @@
       <handler
             commandId="javarush.eclipse.actions.TaskListAction"
             class="javarush.eclipse.ui.action.TaskListHandler"/>
+      <handler
+            commandId="javarush.eclipse.actions.UserInfoAction"
+            class="javarush.eclipse.ui.action.UserInfoHandler"/>
    </extension>
 
 

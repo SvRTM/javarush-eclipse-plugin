@@ -3,50 +3,49 @@ package javarush.eclipse.core.jobs;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.Messages;
 import javarush.eclipse.core.enums._ServiceResultErrorCode;
 import javarush.eclipse.core.utils.Util;
-import javarush.eclipse.core.utils.WorkspaceUtil;
 import javarush.eclipse.exceptions.BaseException;
 import javarush.eclipse.exceptions.SystemException;
+import javarush.eclipse.ui.dialogs.UserInfoDialog;
 import javarush.eclipse.ws.client.ServiceResultErrorCode;
-import javarush.eclipse.ws.client.ServiceResultOfBoolean;
+import javarush.eclipse.ws.client.ServiceResultOfUserInfo;
+import javarush.eclipse.ws.client.UserInfo;
 
-public class ResetProgressTaskJob extends AJob {
-    private final String taskKey;
+public class UserInfoJob extends AJob {
 
-    public ResetProgressTaskJob(String taskKey) {
-        super(Messages.title_ResetProgress);
-        this.taskKey = taskKey;
+    public UserInfoJob() {
+        super(Messages.title_UserInfo);
     }
 
     @Override
-    protected IStatus run(IProgressMonitor monitor) {
+    protected IStatus run(final IProgressMonitor monitor) {
         try {
-            monitor.beginTask(Messages.monitor_ResetProgress, 100);
+            monitor.beginTask(Messages.monitor_UserInfo, 100);
 
             monitor.subTask(Messages.monitor_Authorization);
-            String sessionId = authorize();
+            final String sessionId = authorize();
             if (monitor.isCanceled())
                 return Status.CANCEL_STATUS;
             monitor.worked(50);
 
-            monitor.subTask(Messages.monitor_ResetProgress_reset);
-            ServiceResultOfBoolean res = getWSClient().resetBigTask(sessionId,
-                    taskKey);
-
+            monitor.subTask(Messages.monitor_UserInfo_loadUserProfile);
+            ServiceResultOfUserInfo res = getWSClient()
+                    .getCurrentUserProfile(sessionId);
             if (ServiceResultErrorCode.SUCCESS != res.getErrorCode())
                 throw new SystemException(_ServiceResultErrorCode.UNKNOWN_ERROR
                         .fromValue(res.getErrorCode()).getDescription());
             monitor.worked(50);
-            showMsg();
+
+            UserInfo info = res.getResult();
+            showMsg(info);
 
             return Status.OK_STATUS;
         }
-        catch (Exception e) {
+        catch (final Exception e) {
             return JavarushEclipsePlugin.status(e);
         }
         finally {
@@ -55,19 +54,18 @@ public class ResetProgressTaskJob extends AJob {
         }
     }
 
-    private void showMsg() {
-        Util.getDisplay().syncExec(new Runnable() {
+    private void showMsg(final UserInfo info) {
+        Util.getDisplay().asyncExec(new Runnable() {
             @Override
             public void run() {
                 try {
-                    MessageDialog.openInformation(WorkspaceUtil.getShell(),
-                            Messages.title_ResetProgress,
-                            Messages.info_ResetProgress_success);
+                    UserInfoDialog dlg = new UserInfoDialog(info);
+                    dlg.open();
                 }
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
+                    throw (BaseException) e;
                 }
             }
         });

@@ -1,9 +1,5 @@
 package javarush.eclipse.core;
 
-import static javarush.eclipse.core.utils.Util.getResourceImage;
-
-import org.eclipse.swt.graphics.Image;
-
 public interface Constants {
     String DEFAULT_PROJECT_NAME = "JavaRushHomeWork";
 
@@ -15,23 +11,26 @@ public interface Constants {
     String BTN_TASK_LIST = "javarush.eclipse.actions.TaskListAction";
 
     /************************************************************************/
-    Image iconTaskListReceive = getResourceImage("buuf/task-receive.png");
-    Image iconCheckTask = getResourceImage("buuf/task-check.png");
+    String iconEmpty = "icons/empty.png";
 
-    Image iconPracticalTask = getResourceImage("buuf/practical-task.png");
-    Image iconHomeworkTask = getResourceImage("homework.png");
-    Image iconBonusTask = getResourceImage("buuf/bonus-task.png");
-    Image iconBigTask = getResourceImage("buuf/big-task.png");
+    String iconTaskListReceive = "icons/buuf/task-receive.png";
+    String iconCheckTask = "icons/buuf/task-check.png";
 
-    Image iconDarkMater = getResourceImage("buuf/dark-matter.png");
+    String iconPracticalTask = "icons/buuf/practical-task.png";
+    String iconHomeworkTask = "icons/homework.png";
+    String iconBonusTask = "icons/buuf/bonus-task.png";
+    String iconBigTask = "icons/buuf/big-task.png";
 
-    Image iconAmyTeacher = getResourceImage("amy.png");
-    Image iconBenderTeacher = getResourceImage("bender.png");
-    Image iconFryTeacher = getResourceImage("fry.png");
-    Image iconHermesTeacher = getResourceImage("hermes.png");
-    Image iconLeelaTeacher = getResourceImage("leela.png");
-    Image iconProfessorTeacher = getResourceImage("profesor_farsnworth.png");
-    Image iconZappTeacher = getResourceImage("zapp_brannigan.png");
-    Image iconZoidbergTeacher = getResourceImage("zoidberg.png");
+    String iconDarkMater = "icons/buuf/dark-matter.png";
+    String iconSpaceship = "icons/buuf/spaceship.png";
+
+    String iconAmyTeacher = "amy.png";
+    String iconBenderTeacher = "bender.png";
+    String iconFryTeacher = "fry.png";
+    String iconHermesTeacher = "hermes.png";
+    String iconLeelaTeacher = "leela.png";
+    String iconProfessorTeacher = "profesor_farsnworth.png";
+    String iconZappTeacher = "zapp_brannigan.png";
+    String iconZoidbergTeacher = "zoidberg.png";
 
 }

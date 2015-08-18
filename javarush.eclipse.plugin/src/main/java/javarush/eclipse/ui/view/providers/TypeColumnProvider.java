@@ -1,12 +1,12 @@
 package javarush.eclipse.ui.view.providers;
 
-import javarush.eclipse.core.beans.TaskBean;
-import javarush.eclipse.ui.view.TaskListView;
-
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
+
+import javarush.eclipse.core.beans.TaskBean;
+import javarush.eclipse.ui.view.TaskListView;
 
 public class TypeColumnProvider extends AOwnerDrawLabelProvider {
     public TypeColumnProvider(TaskListView view, TableViewer tableViewer) {
@@ -22,7 +22,6 @@ public class TypeColumnProvider extends AOwnerDrawLabelProvider {
         Rectangle rectangle = image.getBounds();
         event.setBounds(new Rectangle(event.x, event.y, rectangle.width,
                 rectangle.height));
-
         setMinHeightColumn(event);
     }
 

@@ -5,16 +5,14 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.jobs.Job;
 
-import javarush.eclipse.core.jobs.TaskListJob;
+import javarush.eclipse.core.jobs.UserInfoJob;
 
-public class TaskListHandler extends AbstractHandler {
-
+public class UserInfoHandler extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-        Job job = new TaskListJob();
+        Job job = new UserInfoJob();
         job.schedule();
 
         return null;
     }
-
 }

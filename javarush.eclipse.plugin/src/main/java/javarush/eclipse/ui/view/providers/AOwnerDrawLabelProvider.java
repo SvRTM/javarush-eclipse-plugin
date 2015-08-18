@@ -1,16 +1,20 @@
 package javarush.eclipse.ui.view.providers;
 
-import javarush.eclipse.core.Constants;
-
 import org.eclipse.jface.viewers.OwnerDrawLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.TextLayout;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.TableItem;
+
+import javarush.eclipse.core.Constants;
 
 public abstract class AOwnerDrawLabelProvider extends OwnerDrawLabelProvider
         implements Constants {
@@ -61,13 +65,29 @@ public abstract class AOwnerDrawLabelProvider extends OwnerDrawLabelProvider
         return Display.getCurrent();
     }
 
-    protected TextLayout setDefaultTextLayout(Event event) {
+    protected Color getSystemColor(Integer id) {
+        if (id == null)
+            return null;
+        return getDisplay().getSystemColor(id);
+    }
+
+    protected TextLayout createDefaultTextLayout(Event event) {
         TextLayout layout = new TextLayout(getDisplay());
         layout.setAlignment(SWT.LEFT);
         layout.setJustify(true);
         int width = getColumnWidth(event);
         layout.setWidth(width > 0 ? width : 1);
         return layout;
+    }
+
+    protected TextStyle createTextStyle(FontData fontData, Color foreground) {
+        return createTextStyle(fontData, foreground, null);
+    }
+
+    protected TextStyle createTextStyle(FontData fontData, Color foreground,
+                                        Color background) {
+        return new TextStyle(new Font(getDisplay(), fontData), foreground,
+                background);
     }
 
     private int getColumnWidth(Event event) {

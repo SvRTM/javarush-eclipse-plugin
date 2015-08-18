@@ -7,28 +7,27 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
+
 import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.Messages;
 import javarush.eclipse.core.beans.TaskBean;
 import javarush.eclipse.core.beans.TaskBean.TaskStatus;
 import javarush.eclipse.core.enums._ServiceResultErrorCode;
+import javarush.eclipse.core.utils.Util;
 import javarush.eclipse.core.utils.WorkspaceUtil;
 import javarush.eclipse.exceptions.BaseException;
 import javarush.eclipse.exceptions.SystemException;
 import javarush.eclipse.ui.view.TaskListView;
-import javarush.eclipse.ws.client.IJarCommonService;
 import javarush.eclipse.ws.client.ServiceResultErrorCode;
 import javarush.eclipse.ws.client.ServiceResultOfInteger;
 import javarush.eclipse.ws.client.ServiceResultOfTaskInfoList;
 import javarush.eclipse.ws.client.TaskInfo;
 import javarush.eclipse.ws.client.TaskInfoType;
 import javarush.eclipse.ws.client.UserTaskStatus;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 
 public class TaskListJob extends AJob {
 
@@ -47,10 +46,8 @@ public class TaskListJob extends AJob {
                 return Status.CANCEL_STATUS;
             monitor.worked(25);
 
-            final IJarCommonService client = getClient();
-
             monitor.subTask(Messages.monitor_TaskList_countUnreadMessages);
-            final ServiceResultOfInteger unreadMessages = client
+            final ServiceResultOfInteger unreadMessages = getWSClient()
                     .getUnreadedMessagesCount(sessionId);
 
             if (ServiceResultErrorCode.SUCCESS != unreadMessages.getErrorCode())
@@ -66,7 +63,7 @@ public class TaskListJob extends AJob {
                 openConfirm(countMessages);
 
             monitor.subTask(Messages.monitor_TaskList_countUnresolvedTasks);
-            final ServiceResultOfTaskInfoList unresolvedTasks = client
+            final ServiceResultOfTaskInfoList unresolvedTasks = getWSClient()
                     .getUnsolvedHomeTasks(sessionId);
 
             if (ServiceResultErrorCode.SUCCESS != unresolvedTasks
@@ -101,14 +98,14 @@ public class TaskListJob extends AJob {
                 task.setDescription(taskInfo.getDescription());
                 task.setType(taskInfo.getType().ordinal());
                 task.setTeacherCode(taskInfo.getTeacher().ordinal());
-                task.setRestricted(UserTaskStatus.RESTRICTED == taskInfo
-                        .getStatus());
-                task.setStatus(TaskStatus.fromValue(taskInfo.getStatus()
-                        .value()));
+                task.setRestricted(
+                        UserTaskStatus.RESTRICTED == taskInfo.getStatus());
+                task.setStatus(
+                        TaskStatus.fromValue(taskInfo.getStatus().value()));
                 task.setReward(taskInfo.getGold() * 5 + taskInfo.getSilver());
                 task.setLevel(taskInfo.getLevel());
-                task.setTaskName(MessageFormat.format("{0}.{1}{2}{3}", taskInfo
-                        .getLevel(), taskInfo.getLesson(),
+                task.setTaskName(MessageFormat.format("{0}.{1}{2}{3}",
+                        taskInfo.getLevel(), taskInfo.getLesson(),
                         TaskInfoType.BONUS == taskInfo.getType() ? " bonus "
                                                                  : ".",
                         taskInfo.getNumber()));
@@ -125,12 +122,13 @@ public class TaskListJob extends AJob {
             return JavarushEclipsePlugin.status(e);
         }
         finally {
+            logout();
             monitor.done();
         }
     }
 
     private void ui(final TaskBean[] taskBeans) {
-        Display.getDefault().asyncExec(new Runnable() {
+        Util.getDisplay().asyncExec(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -142,15 +140,14 @@ public class TaskListJob extends AJob {
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logError(e);
-                    JavarushEclipsePlugin.errorMsg(e);
+                    JavarushEclipsePlugin.logErrorWithMsg(e);
                 }
             }
         });
     }
 
     private void openInformation() {
-        Display.getDefault().syncExec(new Runnable() {
+        Util.getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -161,15 +158,14 @@ public class TaskListJob extends AJob {
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logError(e);
-                    JavarushEclipsePlugin.errorMsg(e);
+                    JavarushEclipsePlugin.logErrorWithMsg(e);
                 }
             }
         });
     }
 
     private void openConfirm(final int countMessages) {
-        Display.getDefault().syncExec(new Runnable() {
+        Util.getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -183,8 +179,7 @@ public class TaskListJob extends AJob {
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logError(e);
-                    JavarushEclipsePlugin.errorMsg(e);
+                    JavarushEclipsePlugin.logErrorWithMsg(e);
                 }
             }
         });

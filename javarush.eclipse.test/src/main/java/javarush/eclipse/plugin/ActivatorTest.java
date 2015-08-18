@@ -16,7 +16,7 @@ public class ActivatorTest {
 
     @Test
     public void veryStupidTest() {
-        assertEquals("javarush.eclipse", JavarushEclipsePlugin.PLUGIN_ID);
+        assertEquals("javarush.eclipse.plugin", JavarushEclipsePlugin.getId());
         assertTrue("Plugin should be started",
                 JavarushEclipsePlugin.getDefault().started);
     }

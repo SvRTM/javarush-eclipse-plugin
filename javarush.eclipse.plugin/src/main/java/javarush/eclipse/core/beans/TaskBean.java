@@ -1,10 +1,11 @@
 package javarush.eclipse.core.beans;
 
-import javarush.eclipse.Messages;
-import javarush.eclipse.core.Constants;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+
+import javarush.eclipse.Messages;
+import javarush.eclipse.core.Constants;
+import javarush.eclipse.core.utils.ImageUtils;
 
 public class TaskBean {
     private int id;
@@ -114,7 +115,8 @@ public class TaskBean {
     }
 
     public enum NotActiveTasks {
-        LIST(TaskStatus.DISABLED, TaskStatus.PREASSIGNED, TaskStatus.RESTRICTED);
+        LIST(TaskStatus.DISABLED, TaskStatus.PREASSIGNED,
+                TaskStatus.RESTRICTED);
 
         private TaskStatus[] list;
 
@@ -132,17 +134,21 @@ public class TaskBean {
 
     public enum TaskStatus {
         UNKNOWN("Unknown", Messages.TaskStatus_Unknown, SWT.COLOR_BLACK,
-                SWT.COLOR_YELLOW), ASSIGNED("Assigned",
-                Messages.TaskStatus_Assigned, SWT.COLOR_DARK_BLUE, null),
+                SWT.COLOR_YELLOW),
+        ASSIGNED("Assigned", Messages.TaskStatus_Assigned, SWT.COLOR_DARK_BLUE,
+                null),
         IN_PROGRESS("InProgress", Messages.TaskStatus_InProgress,
-                SWT.COLOR_DARK_BLUE, null), SOLVED("Solved",
-                Messages.TaskStatus_Solved, SWT.COLOR_DARK_GREEN, null),
+                SWT.COLOR_DARK_BLUE, null),
+        SOLVED("Solved", Messages.TaskStatus_Solved, SWT.COLOR_DARK_GREEN,
+                null),
         HIDDEN("Hidden", Messages.TaskStatus_Hidden, SWT.COLOR_DARK_GRAY,
-                SWT.COLOR_DARK_YELLOW), PREASSIGNED("Preassigned",
-                Messages.TaskStatus_Preassigned, null, SWT.COLOR_CYAN),
+                SWT.COLOR_DARK_YELLOW),
+        PREASSIGNED("Preassigned", Messages.TaskStatus_Preassigned, null,
+                SWT.COLOR_CYAN),
         RESTRICTED("Restricted", Messages.TaskStatus_Restricted, SWT.COLOR_RED,
-                null), DISABLED("Disabled", Messages.TaskStatus_Disabled,
-                SWT.COLOR_BLACK, SWT.COLOR_GRAY);
+                null),
+        DISABLED("Disabled", Messages.TaskStatus_Disabled, SWT.COLOR_BLACK,
+                SWT.COLOR_GRAY);
 
         private final String value;
         private final String text;
@@ -177,21 +183,21 @@ public class TaskBean {
     }
 
     public enum TaskType {
+        /** Practical Task */
         PRACTICAL(2, Constants.iconPracticalTask, Messages.TaskType_Practical),
-        /** */
+        /** Homework Task */
         HOMEWORK(3, Constants.iconHomeworkTask, Messages.TaskType_Homework),
-        /** */
+        /** Bonus Task */
         BONUS(4, Constants.iconBonusTask, Messages.TaskType_Bonus),
-        /** */
-        BIG(5, Constants.iconBigTask, Messages.TaskType_Big),
-        /** */
-        UNKNOWN(-1, null, "???");
+        /** Big Task */
+        BIG(5, Constants.iconBigTask, Messages.TaskType_Big), /** Unknown */
+        UNKNOWN(-1, Constants.iconEmpty, "???");
 
         private int n;
-        private Image image;
+        private String image;
         private String description;
 
-        private TaskType(int n, Image image, String description) {
+        private TaskType(int n, String image, String description) {
             this.n = n;
             this.image = image;
             this.description = description;
@@ -209,7 +215,7 @@ public class TaskBean {
         }
 
         public Image getImage() {
-            return image;
+            return ImageUtils.getImage(image);
         }
 
         public String getDescription() {

@@ -20,6 +20,17 @@ public class Messages extends NLS {
     public static String info_pref_MainPage_projectCreate;
     public static String error_pref_MainPage_emptyProjectName;
 
+    public static String dialog_UserInfo_title;
+    public static String dialog_UserInfo_level;
+    public static String dialog_UserInfo_lesson;
+    public static String dialog_UserInfo_silverMoney;
+    public static String dialog_UserInfo_goldMoney;
+    public static String dialog_UserInfo_fill;
+
+    public static String title_UserInfo;
+    public static String monitor_UserInfo;
+    public static String monitor_UserInfo_loadUserProfile;
+
     public static String monitor_Authorization;
 
     public static String title_TaskList;

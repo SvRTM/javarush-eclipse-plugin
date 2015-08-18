@@ -4,6 +4,18 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.dialogs.MessageDialog;
+
 import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.Messages;
 import javarush.eclipse.core.Constants;
@@ -19,25 +31,10 @@ import javarush.eclipse.exceptions.BusinessException;
 import javarush.eclipse.exceptions.SystemException;
 import javarush.eclipse.ws.client.ClassDataInfo;
 import javarush.eclipse.ws.client.CompilationStatus;
-import javarush.eclipse.ws.client.IJarCommonService;
-import javarush.eclipse.ws.client.JarCommonService;
 import javarush.eclipse.ws.client.ServiceResultErrorCode;
 import javarush.eclipse.ws.client.ServiceResultOfValidationInfo;
 import javarush.eclipse.ws.client.ValidateInfo;
 import javarush.eclipse.ws.client.ValidationStatus;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 
 public class CheckTaskJob extends AJob {
     private static String MARKER = "com.javarush.test.";
@@ -57,9 +54,6 @@ public class CheckTaskJob extends AJob {
                 return Status.CANCEL_STATUS;
             monitor.worked(25);
 
-            final IJarCommonService client = new JarCommonService()
-                    .getJarCommonServicePort();
-
             monitor.subTask(Messages.monitor_CheckTask_taskNumber);
             final String[] taskNumber = new String[1];
             final List<ClassDataInfo> classDatas = new ArrayList<ClassDataInfo>();
@@ -69,7 +63,7 @@ public class CheckTaskJob extends AJob {
             monitor.worked(25);
 
             monitor.subTask(Messages.monitor_CheckTask_sentOnCheck);
-            final ServiceResultOfValidationInfo res = client
+            final ServiceResultOfValidationInfo res = getWSClient()
                     .validateForPlugin(sessionId, taskNumber[0], classDatas);
 
             if (ServiceResultErrorCode.SUCCESS != res.getErrorCode())
@@ -86,11 +80,11 @@ public class CheckTaskJob extends AJob {
             if (CompilationStatus.SUCCESS != compilationStatus) {
                 showMsg(MessageDialog.ERROR,
                         Messages.title_CheckTask_compilation,
-                        AllowList.LIST.isAllow(compilationStatus) ? _CompilationStatus.UNKNOWN_ERROR
-                                                                         .fromValue(
-                                                                                 compilationStatus)
-                                                                         .getDescription()
-                                                                 : Messages.info_CheckTask_errorCompilation);
+                        AllowList.LIST.isAllow(
+                                compilationStatus) ? _CompilationStatus.UNKNOWN_ERROR
+                                        .fromValue(compilationStatus)
+                                        .getDescription()
+                                                   : Messages.info_CheckTask_errorCompilation);
                 return Status.OK_STATUS;
             }
 
@@ -99,8 +93,8 @@ public class CheckTaskJob extends AJob {
             if (ValidationStatus.SUCCESS != validationStatus)
                 showMsg(MessageDialog.ERROR,
                         Messages.title_CheckTask_validation,
-                        _ValidationStatus.UNKNOWN_ERROR.fromValue(
-                                validationStatus).getDescription());
+                        _ValidationStatus.UNKNOWN_ERROR
+                                .fromValue(validationStatus).getDescription());
 
             final String message = MessageFormat.format(
                     Messages.info_CheckTask_statistics,
@@ -117,14 +111,14 @@ public class CheckTaskJob extends AJob {
             return JavarushEclipsePlugin.status(e);
         }
         finally {
+            logout();
             monitor.done();
         }
     }
 
     private void prepareData(final String[] taskNumber,
                              final List<ClassDataInfo> classDatas,
-                             final IProgressMonitor monitor)
-                                                            throws CoreException {
+                             final IProgressMonitor monitor) throws CoreException {
 
         final IJavaElement element = JdtUtils.getActiveEditorJavaInput();
         if (element == null)
@@ -134,8 +128,8 @@ public class CheckTaskJob extends AJob {
         final String pkg = parent.getElementName();
         final int i = pkg.indexOf(MARKER);
         if (i < 0)
-            throw new BusinessException(MessageFormat.format(
-                    Messages.error_CheckTask_invalidPackage, pkg));
+            throw new BusinessException(MessageFormat
+                    .format(Messages.error_CheckTask_invalidPackage, pkg));
 
         taskNumber[0] = pkg.substring(i + MARKER.length()).replace('.', ',');
 
@@ -145,12 +139,10 @@ public class CheckTaskJob extends AJob {
 
     private void prepareClassDataInfoList(final IContainer container,
                                           final List<ClassDataInfo> classDatas,
-                                          final IProgressMonitor monitor)
-                                                                         throws CoreException {
+                                          final IProgressMonitor monitor) throws CoreException {
         WorkspaceUtil.getWorkspace().run(new IWorkspaceRunnable() {
             @Override
-            public void run(final IProgressMonitor monitor)
-                                                           throws CoreException {
+            public void run(final IProgressMonitor monitor) throws CoreException {
                 for (final IResource r : container.members())
                     if (r instanceof IContainer)
                         prepareClassDataInfoList((IContainer) r, classDatas,
@@ -163,8 +155,7 @@ public class CheckTaskJob extends AJob {
         }, monitor);
     }
 
-    private ClassDataInfo prepareClassDataInfo(final IFile file)
-                                                                throws CoreException {
+    private ClassDataInfo prepareClassDataInfo(final IFile file) throws CoreException {
         final ClassDataInfo info = new ClassDataInfo();
         info.setFileName(file.getName());
         info.setPackage(JavaCore.create(file).getParent().getElementName());
@@ -173,7 +164,7 @@ public class CheckTaskJob extends AJob {
     }
 
     private void showMsg(final int kind, final String title, final String msg) {
-        Display.getDefault().syncExec(new Runnable() {
+        Util.getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -190,18 +181,17 @@ public class CheckTaskJob extends AJob {
     }
 
     private void reloadTaskList() {
-        Display.getDefault().syncExec(new Runnable() {
+        Util.getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
                 try {
-                    WorkspaceUtil.getHandlerService().executeCommand(
-                            Constants.BTN_TASK_LIST, null);
+                    WorkspaceUtil.getHandlerService()
+                            .executeCommand(Constants.BTN_TASK_LIST, null);
                 }
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logError(e);
-                    JavarushEclipsePlugin.errorMsg(e);
+                    JavarushEclipsePlugin.logErrorWithMsg(e);
                 }
             }
         });

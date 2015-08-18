@@ -3,13 +3,6 @@ package javarush.eclipse.ui.preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javarush.eclipse.JavarushEclipsePlugin;
-import javarush.eclipse.Messages;
-import javarush.eclipse.core.utils.JdtUtils;
-import javarush.eclipse.core.utils.WorkspaceUtil;
-import javarush.eclipse.exceptions.BaseException;
-import javarush.eclipse.exceptions.SystemException;
-
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
@@ -28,8 +21,15 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-public class MainPrefPage extends PreferencePage implements
-        IWorkbenchPreferencePage {
+import javarush.eclipse.JavarushEclipsePlugin;
+import javarush.eclipse.Messages;
+import javarush.eclipse.core.utils.JdtUtils;
+import javarush.eclipse.core.utils.WorkspaceUtil;
+import javarush.eclipse.exceptions.BaseException;
+import javarush.eclipse.exceptions.SystemException;
+
+public class MainPrefPage extends PreferencePage
+        implements IWorkbenchPreferencePage {
 
     private static String SFIELD = "projectName";
 
@@ -43,8 +43,8 @@ public class MainPrefPage extends PreferencePage implements
 
     @Override
     public void init(IWorkbench workbench) {
-        setPreferenceStore(JavarushEclipsePlugin.getDefault()
-                .getPreferenceStore());
+        setPreferenceStore(
+                JavarushEclipsePlugin.getDefault().getPreferenceStore());
         setDescription(Messages.title);
     }
 
@@ -66,26 +66,29 @@ public class MainPrefPage extends PreferencePage implements
         top.setLayout(new GridLayout(4, false));
 
         Label lbl = new Label(top, SWT.NONE);
-        lbl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+        lbl.setLayoutData(
+                new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
         lbl.setText(Messages.pref_MainPage_projectName);
 
         text = new Text(top, SWT.BORDER);
-        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+        text.setLayoutData(
+                new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
         text.setText(getPreferenceStore().getString(SFIELD));
         text.addVerifyListener(new VerifyListener() {
             @Override
             public void verifyText(VerifyEvent e) {
                 String currentText = ((Text) e.widget).getText();
-                Matcher matcher = pattern.matcher(currentText.substring(0,
-                        e.start) + e.text + currentText.substring(e.end));
+                Matcher matcher = pattern
+                        .matcher(currentText.substring(0, e.start) + e.text
+                                 + currentText.substring(e.end));
                 if (!matcher.matches())
                     e.doit = false;
             }
         });
 
         Button btn = new Button(top, SWT.NONE);
-        btn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 4,
-                1));
+        btn.setLayoutData(
+                new GridData(SWT.RIGHT, SWT.CENTER, false, false, 4, 1));
         btn.setText(Messages.action_pref_MainPage_createProject);
         btn.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -108,14 +111,13 @@ public class MainPrefPage extends PreferencePage implements
                         kind = MessageDialog.INFORMATION;
                         msg = Messages.info_pref_MainPage_projectCreate;
                     }
-                    MessageDialog
-                            .open(kind, getShell(), Messages.title, msg, 0);
+                    MessageDialog.open(kind, getShell(), Messages.title, msg,
+                            0);
                 }
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logError(e);
-                    JavarushEclipsePlugin.errorMsg(e);
+                    JavarushEclipsePlugin.logErrorWithMsg(e);
                 }
             }
         });

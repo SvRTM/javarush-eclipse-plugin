@@ -2,18 +2,6 @@ package javarush.eclipse.core.jobs;
 
 import java.util.List;
 
-import javarush.eclipse.JavarushEclipsePlugin;
-import javarush.eclipse.Messages;
-import javarush.eclipse.core.enums._ServiceResultErrorCode;
-import javarush.eclipse.core.utils.JdtUtils;
-import javarush.eclipse.exceptions.BaseException;
-import javarush.eclipse.exceptions.SystemException;
-import javarush.eclipse.ws.client.ClassDataInfo;
-import javarush.eclipse.ws.client.IJarCommonService;
-import javarush.eclipse.ws.client.JarCommonService;
-import javarush.eclipse.ws.client.ServiceResultErrorCode;
-import javarush.eclipse.ws.client.ServiceResultOfClassDataInfoList;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,7 +10,17 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.swt.widgets.Display;
+
+import javarush.eclipse.JavarushEclipsePlugin;
+import javarush.eclipse.Messages;
+import javarush.eclipse.core.enums._ServiceResultErrorCode;
+import javarush.eclipse.core.utils.JdtUtils;
+import javarush.eclipse.core.utils.Util;
+import javarush.eclipse.exceptions.BaseException;
+import javarush.eclipse.exceptions.SystemException;
+import javarush.eclipse.ws.client.ClassDataInfo;
+import javarush.eclipse.ws.client.ServiceResultErrorCode;
+import javarush.eclipse.ws.client.ServiceResultOfClassDataInfoList;
 
 public class LoadTaskProjectJob extends AJob {
 
@@ -42,11 +40,8 @@ public class LoadTaskProjectJob extends AJob {
             final String sessionId = authorize();
             monitor.worked(33);
 
-            final IJarCommonService client = new JarCommonService()
-                    .getJarCommonServicePort();
-
             monitor.subTask(Messages.monitor_LoadTask_downloadJavaFiles);
-            final ServiceResultOfClassDataInfoList res = client
+            final ServiceResultOfClassDataInfoList res = getWSClient()
                     .getTaskTemplate(sessionId, taskKey);
 
             if (ServiceResultErrorCode.SUCCESS != res.getErrorCode())
@@ -81,12 +76,12 @@ public class LoadTaskProjectJob extends AJob {
             return JavarushEclipsePlugin.status(e);
         }
         finally {
+            logout();
             monitor.done();
         }
     }
 
-    private boolean isContainMainMethod(final ICompilationUnit cu)
-                                                                  throws JavaModelException {
+    private boolean isContainMainMethod(final ICompilationUnit cu) throws JavaModelException {
         final IType[] typeDeclarationList = cu.getTypes();
         for (final IType typeDeclaration : typeDeclarationList) {
             final IMethod[] methodList = typeDeclaration.getMethods();
@@ -102,7 +97,7 @@ public class LoadTaskProjectJob extends AJob {
     }
 
     private void openInEditor(final ICompilationUnit cu) {
-        Display.getDefault().syncExec(new Runnable() {
+        Util.getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -111,8 +106,7 @@ public class LoadTaskProjectJob extends AJob {
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logError(e);
-                    JavarushEclipsePlugin.errorMsg(e);
+                    JavarushEclipsePlugin.logErrorWithMsg(e);
                 }
             }
         });

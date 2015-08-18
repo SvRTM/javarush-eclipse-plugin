@@ -1,11 +1,12 @@
 package javarush.eclipse.ui.view.providers;
 
-import javarush.eclipse.core.beans.TaskBean;
-
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Event;
+
+import javarush.eclipse.core.beans.TaskBean;
+import javarush.eclipse.core.utils.ImageUtils;
 
 public class TeacherColumnProvider extends AOwnerDrawLabelProvider {
     public TeacherColumnProvider(TableViewer tableViewer) {
@@ -19,7 +20,8 @@ public class TeacherColumnProvider extends AOwnerDrawLabelProvider {
 
         Image image = getResImage(element);
         Rectangle rect = image.getBounds();
-        event.setBounds(new Rectangle(event.x, event.y, rect.width, rect.height));
+        event.setBounds(
+                new Rectangle(event.x, event.y, rect.width, rect.height));
     }
 
     @Override
@@ -36,24 +38,36 @@ public class TeacherColumnProvider extends AOwnerDrawLabelProvider {
     protected Image getResImage(Object element) {
         TaskBean data = (TaskBean) element;
 
+        String img = null;
         switch (data.getTeacherCode()) {
             case 1:
-                return iconProfessorTeacher;
+                img = iconProfessorTeacher;
+                break;
             case 2:
-                return iconLeelaTeacher;
+                img = iconLeelaTeacher;
+                break;
             case 3:
-                return iconBenderTeacher;
+                img = iconBenderTeacher;
+                break;
             case 4:
-                return iconHermesTeacher;
+                img = iconHermesTeacher;
+                break;
             case 5:
-                return iconZoidbergTeacher;
+                img = iconZoidbergTeacher;
+                break;
             case 6:
-                return iconFryTeacher;
+                img = iconFryTeacher;
+                break;
             case 7:
-                return iconZappTeacher;
+                img = iconZappTeacher;
+                break;
             case 8:
-                return iconAmyTeacher;
+                img = iconAmyTeacher;
+                break;
+            default:
+                img = iconEmpty;
         }
-        return null;
+
+        return ImageUtils.getImage(img);
     }
 }
