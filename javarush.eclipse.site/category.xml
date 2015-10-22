@@ -3,7 +3,7 @@
    <feature url="features/javarush.eclipse.feature.source_0.0.0.jar" id="javarush.eclipse.feature.source" version="0.0.0">
       <category name="javarush.eclipse Developer Resources"/>
    </feature>
-   <feature url="features/javarush.eclipse.feature_1.0.1.qualifier.jar" id="javarush.eclipse.feature" version="1.0.1.qualifier">
+   <feature url="features/javarush.eclipse.feature_1.0.2.qualifier.jar" id="javarush.eclipse.feature" version="1.0.2.qualifier">
       <category name="javarush.eclipse"/>
    </feature>
    <category-def name="javarush.eclipse" label="JavarushEclipse">

@@ -108,6 +108,7 @@ public class CheckTaskJob extends AJob {
             return Status.OK_STATUS;
         }
         catch (final Exception e) {
+            resetSession();
             return JavarushEclipsePlugin.status(e);
         }
         finally {

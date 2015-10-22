@@ -24,6 +24,7 @@ import javarush.eclipse.Messages;
 import javarush.eclipse.core.Constants;
 import javarush.eclipse.core.enums._ServiceResultErrorCode;
 import javarush.eclipse.core.utils.ImageUtils;
+import javarush.eclipse.core.utils.SessionSingleton;
 import javarush.eclipse.core.utils.Util;
 import javarush.eclipse.core.utils.WSClient;
 import javarush.eclipse.core.utils.WorkspaceUtil;
@@ -128,6 +129,7 @@ public class UserInfoDialog extends Dialog {
                     setUserInfo(info);
                 }
                 catch (Exception e) {
+                    SessionSingleton.INSTANCE.setId(null);
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
                     JavarushEclipsePlugin.logErrorWithMsg(e);

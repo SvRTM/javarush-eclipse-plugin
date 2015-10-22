@@ -15,6 +15,8 @@ public class Messages extends NLS {
     public static String toolbox_TaskList_taskList;
 
     public static String pref_MainPage_projectName;
+    public static String pref_MainPage_sessionUpdateInterval;
+    public static String pref_MainPage_session_minutes;
     public static String action_pref_MainPage_createProject;
     public static String warn_pref_MainPage_projectExist;
     public static String info_pref_MainPage_projectCreate;

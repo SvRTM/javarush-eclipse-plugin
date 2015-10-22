@@ -2,6 +2,9 @@ package javarush.eclipse.core;
 
 public interface Constants {
     String DEFAULT_PROJECT_NAME = "JavaRushHomeWork";
+    int DEFAULT_MINUTES = 300;
+    String FIELD_PROJECT = "projectName";
+    String FIELD_MINUTES = "minutes";
 
     String URL_MESSAGES_INFO = "http://javarush.ru/user/messages/info";
     String URL_ASK_HELP = "http://help.javarush.ru/search/?q={0}";

@@ -3,6 +3,7 @@ package javarush.eclipse.core.jobs;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.jobs.Job;
 
+import javarush.eclipse.core.utils.SessionSingleton;
 import javarush.eclipse.core.utils.WSClient;
 import javarush.eclipse.ws.client.IJarCommonService;
 
@@ -25,5 +26,9 @@ public abstract class AJob extends Job {
 
     protected void logout() {
         wsClient.logout();
+    }
+
+    protected void resetSession() {
+        SessionSingleton.INSTANCE.setId(null);
     }
 }

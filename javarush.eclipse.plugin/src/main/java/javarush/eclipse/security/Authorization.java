@@ -11,8 +11,12 @@ import java.util.Properties;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.preference.IPreferenceStore;
 
+import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.Messages;
+import javarush.eclipse.core.Constants;
+import javarush.eclipse.core.utils.SessionSingleton;
 import javarush.eclipse.core.utils.WorkspaceUtil;
 import javarush.eclipse.exceptions.SystemException;
 import javarush.eclipse.security.exceptoins.AuthorizationException;
@@ -28,7 +32,6 @@ public class Authorization {
     private static String SECRET_KEY = "JavaRushPlugin.properties";
     private static String PROPERTY_KEY = "javarush.user.secretkey";
 
-    private String sessionId;
     private final IJarCommonService client;
 
     public Authorization(IJarCommonService client) {
@@ -43,6 +46,10 @@ public class Authorization {
         if (secretKey == null || "".equals(secretKey))
             throw new AuthorizationException(Messages.error_Login_secKeyEmpty);
 
+        String sessionId = getSessionId();
+        if (sessionId != null)
+            return sessionId;
+
         ServiceResultOfString result = client.signInViaSecretKey(API_VERSION,
                 secretKey);
 
@@ -52,6 +59,9 @@ public class Authorization {
             if (sessionId == null)
                 throw new AuthorizationException(Action.LOGIN,
                         Messages.error_Login_sessionIdEmpty);
+
+            SessionSingleton.INSTANCE.setId(sessionId);
+
             return sessionId;
         }
         else if (API_VERSION_MISMATCH == errorCode)
@@ -66,8 +76,10 @@ public class Authorization {
     }
 
     public void logout() {
+        String sessionId = getSessionId();
         if (sessionId == null)
             return;
+
         ServiceResultOfBoolean result = client.signOut(sessionId);
         ServiceResultErrorCode errorCode = result.getErrorCode();
         if (SUCCESS != errorCode)
@@ -90,5 +102,15 @@ public class Authorization {
         catch (final Exception e) {
             throw new SystemException(e);
         }
+    }
+
+    private String getSessionId() {
+        return SessionSingleton.INSTANCE.getId(getLifetime());
+    }
+
+    private int getLifetime() {
+        IPreferenceStore store = JavarushEclipsePlugin.getDefault()
+                .getPreferenceStore();
+        return store.getInt(Constants.FIELD_MINUTES);
     }
 }

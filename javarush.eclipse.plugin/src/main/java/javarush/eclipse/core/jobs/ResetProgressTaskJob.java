@@ -47,6 +47,7 @@ public class ResetProgressTaskJob extends AJob {
             return Status.OK_STATUS;
         }
         catch (Exception e) {
+            resetSession();
             return JavarushEclipsePlugin.status(e);
         }
         finally {

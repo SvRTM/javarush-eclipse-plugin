@@ -6,7 +6,6 @@ import javax.xml.ws.BindingProvider;
 
 import org.eclipse.core.runtime.CoreException;
 
-import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.security.Authorization;
 import javarush.eclipse.ws.client.IJarCommonService;
 import javarush.eclipse.ws.client.JarCommonService;
@@ -35,12 +34,12 @@ public class WSClient {
     }
 
     public void logout() {
-        try {
-            authorization.logout();
-        }
-        catch (Exception e) {
-            JavarushEclipsePlugin.logError(e);
-        }
+        // try {
+        // authorization.logout();
+        // }
+        // catch (Exception e) {
+        // JavarushEclipsePlugin.logError(e);
+        // }
     }
 
     private IJarCommonService createService() {
