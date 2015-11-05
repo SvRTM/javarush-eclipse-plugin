@@ -6,6 +6,9 @@ public interface Constants {
     String FIELD_PROJECT = "projectName";
     String FIELD_MINUTES = "minutes";
 
+    String FILE_SECRET_KEY = "JavaRushPlugin.properties";
+    String PROPERTY_KEY = "javarush.user.secretkey";
+
     String URL_MESSAGES_INFO = "http://javarush.ru/user/messages/info";
     String URL_ASK_HELP = "http://help.javarush.ru/search/?q={0}";
     String URL_DISCUSS_TASK = "http://info.javarush.ru/search/topics/?q={0}";

@@ -1,8 +1,5 @@
 package javarush.eclipse.ui.view.listeners;
 
-import javarush.eclipse.core.beans.TaskBean;
-import javarush.eclipse.ui.view.TaskListView;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -13,6 +10,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+
+import javarush.eclipse.core.beans.TaskBean;
+import javarush.eclipse.ui.view.TaskListView;
 
 final public class ListenerTooltipBuilder {
 
@@ -42,10 +42,10 @@ final public class ListenerTooltipBuilder {
                     table.notifyListeners(SWT.Selection, e);
                     shell.dispose();
                     view.setFocus();
-                break;
+                    break;
                 case SWT.MouseExit:
                     shell.dispose();
-                break;
+                    break;
             }
         }
     }
@@ -73,7 +73,7 @@ final public class ListenerTooltipBuilder {
                     tip.dispose();
                     tip = null;
                     label = null;
-                break;
+                    break;
 
                 case SWT.MouseHover:
                     Point point = new Point(event.x, event.y);
@@ -92,7 +92,8 @@ final public class ListenerTooltipBuilder {
 
                     if (tip != null && !tip.isDisposed())
                         tip.dispose();
-                    tip = new Shell(shell, SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
+                    tip = new Shell(shell,
+                            SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
                     tip.setBackground(event.display
                             .getSystemColor(SWT.COLOR_INFO_BACKGROUND));
                     FillLayout layout = new FillLayout();
@@ -106,7 +107,7 @@ final public class ListenerTooltipBuilder {
                     label.setData("_TABLEITEM", item);
                     TaskBean data = (TaskBean) item.getData();
                     label.setText(column == 0 ? data.getType().getDescription()
-                                             : data.getDescription());
+                                              : data.getDescription());
                     label.addListener(SWT.MouseExit, labelListener);
                     label.addListener(SWT.MouseDown, labelListener);
                     Rectangle rect = item.getBounds(column);

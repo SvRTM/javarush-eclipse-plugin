@@ -2,7 +2,11 @@ package javarush.eclipse.core.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Properties;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.graphics.Font;
@@ -10,6 +14,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 import javarush.eclipse.JavarushEclipsePlugin;
+import javarush.eclipse.core.Constants;
 import javarush.eclipse.exceptions.SystemException;
 
 public class Util {
@@ -81,4 +86,22 @@ public class Util {
 
         return 0;
     }
+
+    public static String getSecretKey(IProject project) throws CoreException {
+        final IFile file = WorkspaceUtil.getFile(Constants.FILE_SECRET_KEY,
+                null, project);
+
+        InputStream in = file.getContents();
+        try {
+            final Properties prop = new Properties();
+            prop.load(in);
+            final String secretKey = prop.getProperty(Constants.PROPERTY_KEY);
+
+            return secretKey != null ? secretKey.trim() : null;
+        }
+        catch (final Exception e) {
+            throw new SystemException(e);
+        }
+    }
+
 }

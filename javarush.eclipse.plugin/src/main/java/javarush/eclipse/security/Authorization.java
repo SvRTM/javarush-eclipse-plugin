@@ -4,11 +4,8 @@ import static javarush.eclipse.ws.client.ServiceResultErrorCode.API_VERSION_MISM
 import static javarush.eclipse.ws.client.ServiceResultErrorCode.AUTHORIZATION_ERROR;
 import static javarush.eclipse.ws.client.ServiceResultErrorCode.SUCCESS;
 
-import java.io.InputStream;
 import java.text.MessageFormat;
-import java.util.Properties;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -17,8 +14,7 @@ import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.Messages;
 import javarush.eclipse.core.Constants;
 import javarush.eclipse.core.utils.SessionSingleton;
-import javarush.eclipse.core.utils.WorkspaceUtil;
-import javarush.eclipse.exceptions.SystemException;
+import javarush.eclipse.core.utils.Util;
 import javarush.eclipse.security.exceptoins.AuthorizationException;
 import javarush.eclipse.security.exceptoins.AuthorizationException.Action;
 import javarush.eclipse.ws.client.IJarCommonService;
@@ -29,9 +25,6 @@ import javarush.eclipse.ws.client.ServiceResultOfString;
 public class Authorization {
     private static int API_VERSION = 1;
 
-    private static String SECRET_KEY = "JavaRushPlugin.properties";
-    private static String PROPERTY_KEY = "javarush.user.secretkey";
-
     private final IJarCommonService client;
 
     public Authorization(IJarCommonService client) {
@@ -39,7 +32,7 @@ public class Authorization {
     }
 
     public String login(IProject project) throws CoreException {
-        return login(getSecretKey(project));
+        return login(Util.getSecretKey(project));
     }
 
     public String login(String secretKey) {
@@ -86,22 +79,6 @@ public class Authorization {
             throw new AuthorizationException(Action.LOGOUT,
                     MessageFormat.format(Messages.error_Login_unknownError,
                             errorCode.toString()));
-    }
-
-    public String getSecretKey(IProject project) throws CoreException {
-        final IFile file = WorkspaceUtil.getFile(SECRET_KEY, null, project);
-
-        InputStream in = file.getContents();
-        try {
-            final Properties prop = new Properties();
-            prop.load(in);
-            final String secretKey = prop.getProperty(PROPERTY_KEY);
-
-            return secretKey != null ? secretKey.trim() : null;
-        }
-        catch (final Exception e) {
-            throw new SystemException(e);
-        }
     }
 
     private String getSessionId() {

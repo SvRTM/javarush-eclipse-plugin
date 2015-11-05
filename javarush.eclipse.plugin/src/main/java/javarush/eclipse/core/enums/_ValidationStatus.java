@@ -7,16 +7,18 @@ import static javarush.eclipse.Messages.ValidationStatus_Success;
 import static javarush.eclipse.Messages.ValidationStatus_TaskSolvedError;
 import static javarush.eclipse.Messages.ValidationStatus_TimeoutError;
 import static javarush.eclipse.Messages.ValidationStatus_UnknownError;
+
 import javarush.eclipse.ws.client.ValidationStatus;
 
 public enum _ValidationStatus {
-    SUCCESS(ValidationStatus_Success), UNKNOWN_ERROR(
-            ValidationStatus_UnknownError), INVALID(ValidationStatus_Invalid),
+    SUCCESS(ValidationStatus_Success),
+    UNKNOWN_ERROR(ValidationStatus_UnknownError),
+    INVALID(ValidationStatus_Invalid),
     INVALID_BUT_PARTIAL_SUCCESS(ValidationStatus_InvalidButPartialSuccess),
-    TIMEOUT_ERROR(ValidationStatus_TimeoutError), SECURITY_ERROR(
-            ValidationStatus_SecurityError), TASK_SOLVED_ERROR(
-            ValidationStatus_TaskSolvedError), TASK_UNAVAILABLE_ERROR(
-            ValidationStatus_UnknownError);
+    TIMEOUT_ERROR(ValidationStatus_TimeoutError),
+    SECURITY_ERROR(ValidationStatus_SecurityError),
+    TASK_SOLVED_ERROR(ValidationStatus_TaskSolvedError),
+    TASK_UNAVAILABLE_ERROR(ValidationStatus_UnknownError);
 
     private String description;
 

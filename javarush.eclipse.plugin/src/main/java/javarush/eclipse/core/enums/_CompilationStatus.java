@@ -8,17 +8,18 @@ import static javarush.eclipse.Messages.CompilationStatus_SaveError;
 import static javarush.eclipse.Messages.CompilationStatus_SemicolonExpectedError;
 import static javarush.eclipse.Messages.CompilationStatus_Success;
 import static javarush.eclipse.Messages.CompilationStatus_UnknownError;
+
 import javarush.eclipse.ws.client.CompilationStatus;
 
 public enum _CompilationStatus {
-    SUCCESS(CompilationStatus_Success), UNKNOWN_ERROR(
-            CompilationStatus_UnknownError), SAVE_ERROR(
-            CompilationStatus_SaveError), QUOTE_EXPECTED_ERROR(
-            CompilationStatus_QuoteExpectedError), SEMICOLON_EXPECTED_ERROR(
-            CompilationStatus_SemicolonExpectedError), BRACE_EXPECTED_ERROR(
-            CompilationStatus_BraceExpectedError), PARENTHESIS_EXPECTED_ERROR(
-            CompilationStatus_ParenthesisExpectedError), NOT_A_STATEMENT_ERROR(
-            CompilationStatus_NotAStatementError);
+    SUCCESS(CompilationStatus_Success),
+    UNKNOWN_ERROR(CompilationStatus_UnknownError),
+    SAVE_ERROR(CompilationStatus_SaveError),
+    QUOTE_EXPECTED_ERROR(CompilationStatus_QuoteExpectedError),
+    SEMICOLON_EXPECTED_ERROR(CompilationStatus_SemicolonExpectedError),
+    BRACE_EXPECTED_ERROR(CompilationStatus_BraceExpectedError),
+    PARENTHESIS_EXPECTED_ERROR(CompilationStatus_ParenthesisExpectedError),
+    NOT_A_STATEMENT_ERROR(CompilationStatus_NotAStatementError);
 
     private String description;
 

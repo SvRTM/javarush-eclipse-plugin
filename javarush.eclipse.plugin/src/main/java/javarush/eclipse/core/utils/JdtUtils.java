@@ -2,9 +2,6 @@ package javarush.eclipse.core.utils;
 
 import java.io.UnsupportedEncodingException;
 
-import javarush.eclipse.Messages;
-import javarush.eclipse.exceptions.SystemException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -22,12 +19,14 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 
+import javarush.eclipse.Messages;
+import javarush.eclipse.exceptions.SystemException;
+
 public class JdtUtils {
 
     public static IJavaProject createJavaProject(String name, String srcFolder,
                                                  String buildFolder,
-                                                 IProgressMonitor monitor)
-                                                                          throws CoreException {
+                                                 IProgressMonitor monitor) throws CoreException {
         IProject project = WorkspaceUtil.getProject(name, monitor);
         WorkspaceUtil.createFolder(project, srcFolder, monitor);
         WorkspaceUtil.addNature(project, JavaCore.NATURE_ID, monitor);
@@ -41,25 +40,21 @@ public class JdtUtils {
     }
 
     public static void addFolders(IJavaProject javaProject, String srcFolder,
-                                  String buildFolder, IProgressMonitor monitor)
-                                                                               throws JavaModelException {
+                                  String buildFolder,
+                                  IProgressMonitor monitor) throws JavaModelException {
         IProject project = javaProject.getProject();
 
-        IClasspathEntry[] buildPath = {
-                                       JavaCore.newSourceEntry(project
-                                               .getFullPath().append(srcFolder)),
-                                       JavaRuntime
-                                               .getDefaultJREContainerEntry() };
+        IClasspathEntry[] buildPath = { JavaCore.newSourceEntry(
+                project.getFullPath().append(srcFolder)), JavaRuntime
+                        .getDefaultJREContainerEntry() };
         javaProject.setRawClasspath(buildPath,
                 project.getFullPath().append(buildFolder), monitor);
     }
 
     public static ICompilationUnit creatPackage(String _package,
-                                                String fileName,
-                                                String content,
-                                                IProgressMonitor monitor)
-                                                                         throws CoreException,
-                                                                         UnsupportedEncodingException {
+                                                String fileName, String content,
+                                                IProgressMonitor monitor) throws CoreException,
+                                                                          UnsupportedEncodingException {
         IPackageFragmentRoot packageRoot = getSourceFolder(monitor);
         IPackageFragment fragment = packageRoot.createPackageFragment(_package,
                 true, monitor);
@@ -80,8 +75,7 @@ public class JdtUtils {
         return JavaUI.getEditorInputJavaElement(editorInput);
     }
 
-    public static IPackageFragmentRoot getSourceFolder(IProgressMonitor monitor)
-                                                                                throws CoreException {
+    public static IPackageFragmentRoot getSourceFolder(IProgressMonitor monitor) throws CoreException {
         IPackageFragmentRoot[] fragmentRoots = JavaCore.create(
                 WorkspaceUtil.getProject(Util.getPrefProjectName(), monitor))
                 .getPackageFragmentRoots();

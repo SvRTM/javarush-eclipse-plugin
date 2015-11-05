@@ -36,7 +36,7 @@ import javarush.eclipse.ws.client.UserInfo;
 
 public class UserInfoDialog extends Dialog {
 
-    private UserInfo info;
+    private final UserInfo info;
 
     private Label profileFoto;
     private Label userName;
@@ -163,6 +163,7 @@ public class UserInfoDialog extends Dialog {
         return container;
     }
 
+    @Override
     protected Control createContents(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout();

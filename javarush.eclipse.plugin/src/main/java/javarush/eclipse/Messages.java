@@ -15,9 +15,11 @@ public class Messages extends NLS {
     public static String toolbox_TaskList_taskList;
 
     public static String pref_MainPage_projectName;
+    public static String pref_MainPage_secretKey;
     public static String pref_MainPage_sessionUpdateInterval;
     public static String pref_MainPage_session_minutes;
     public static String action_pref_MainPage_createProject;
+    public static String action_pref_MainPage_addSecretKey;
     public static String warn_pref_MainPage_projectExist;
     public static String info_pref_MainPage_projectCreate;
     public static String error_pref_MainPage_emptyProjectName;
@@ -146,4 +148,5 @@ public class Messages extends NLS {
     public static String ValidationStatus_SecurityError;
     public static String ValidationStatus_TaskSolvedError;
     public static String ValidationStatus_TaskUnavailableError;
+    public static String MainPrefPage_text_text;
 }

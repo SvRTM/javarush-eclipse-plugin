@@ -165,10 +165,7 @@ public class WorkspaceUtil {
 
     public static boolean isProjectExists(final String name) throws CoreException {
         IProject prj = findProject(name);
-        if (prj != null)
-            return prj.isOpen();
-
-        return false;
+        return prj != null && prj.isOpen();
     }
 
     public static IFile getFile(final String fileName, final String _package,
@@ -237,7 +234,7 @@ public class WorkspaceUtil {
     public static IHandlerService getHandlerService() {
         IWorkbenchWindow window = getActiveWorkbenchWindow();
         IHandlerService handlerService = (IHandlerService) window
-                .getService(IHandlerService.class);
+                .<IHandlerService> getService(IHandlerService.class);
         return handlerService;
     }
 

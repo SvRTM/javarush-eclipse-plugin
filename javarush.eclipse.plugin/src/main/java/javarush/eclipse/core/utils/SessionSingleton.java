@@ -5,11 +5,12 @@ import java.util.Date;
 
 public enum SessionSingleton {
     INSTANCE {
-        private Object lock = new Object();
+        private final Object lock = new Object();
 
         private String id;
         private Date dateCreate;
 
+        @Override
         public void setId(String sessionId) {
             synchronized (lock) {
                 id = sessionId;
@@ -17,6 +18,7 @@ public enum SessionSingleton {
             }
         }
 
+        @Override
         public String getId(int lifetime) {
             synchronized (lock) {
                 if (dateCreate == null || id == null || isTimeOver(lifetime))
