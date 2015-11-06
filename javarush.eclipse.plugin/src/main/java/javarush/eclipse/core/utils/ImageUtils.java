@@ -1,5 +1,7 @@
 package javarush.eclipse.core.utils;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -62,8 +64,8 @@ public class ImageUtils {
         return resizeImage(image, width, height, registry, name);
     }
 
-    public static Image resizeImage(final URL url, final int width,
-                                    final int height) {
+    public static Image resizeImage(URL url, final int width,
+                                    final int height) throws IOException {
         ImageRegistry registry = JavarushEclipsePlugin.getDefault()
                 .getImageRegistry();
 
@@ -71,6 +73,17 @@ public class ImageUtils {
         Image scaled = registry.get(name);
         if (scaled != null)
             return scaled;
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setReadTimeout(5000);
+        int status = conn.getResponseCode();
+        if (status != HttpURLConnection.HTTP_OK)
+            switch (status) {
+                case HttpURLConnection.HTTP_MOVED_TEMP:
+                case HttpURLConnection.HTTP_MOVED_PERM:
+                case HttpURLConnection.HTTP_SEE_OTHER:
+                    url = new URL(conn.getHeaderField("Location"));
+            }
 
         ImageDescriptor desc = ImageDescriptor.createFromURL(url);
         Image image = desc.createImage();

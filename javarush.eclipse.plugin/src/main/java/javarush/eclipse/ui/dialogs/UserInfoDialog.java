@@ -1,6 +1,5 @@
 package javarush.eclipse.ui.dialogs;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 
@@ -10,7 +9,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -69,13 +67,12 @@ public class UserInfoDialog extends Dialog {
         Font boldFont = Util.defaultBoldFont();
 
         Composite composite = new Composite(container, SWT.NONE);
-        composite.setLayout(new GridLayout(2, false));
+        composite.setLayout(new FillLayout(SWT.VERTICAL));
         composite.setLayoutData(
                 new GridData(SWT.CENTER, SWT.CENTER, false, true, 3, 1));
-        profileFoto = new Label(composite,
-                SWT.BORDER | SWT.SHADOW_NONE | SWT.RIGHT);
-        userName = new Label(composite, SWT.SHADOW_NONE);
         FontData fontData = Util.addHeightFont(8, boldFont);
+        profileFoto = new Label(composite, SWT.SHADOW_NONE | SWT.CENTER);
+        userName = new Label(composite, SWT.SHADOW_NONE);
         userName.setFont(createFont(fontData));
 
         separator(container);
@@ -95,7 +92,7 @@ public class UserInfoDialog extends Dialog {
         Composite composite_3 = new Composite(container, SWT.NONE);
         composite_3.setLayout(new GridLayout(7, false));
         composite_3.setLayoutData(
-                new GridData(SWT.FILL, SWT.CENTER, true, true, 3, 1));
+                new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 
         Label imageAg = new Label(composite_3, SWT.RIGHT);
         imageAg.setImage(ImageUtils.getImage(Constants.iconDarkMater));
@@ -103,9 +100,11 @@ public class UserInfoDialog extends Dialog {
         ag.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1));
         ag.setFont(createFont(fontData));
 
+        nop(composite_3);
+
         final Button fill = new Button(composite_3, SWT.NONE);
         fill.setLayoutData(
-                new GridData(SWT.CENTER, SWT.BOTTOM, false, false, 1, 1));
+                new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
         fill.setText(Messages.dialog_UserInfo_fill);
         fill.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -151,6 +150,8 @@ public class UserInfoDialog extends Dialog {
                 new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         au.setFont(createFont(fontData));
 
+        nop(composite_3);
+
         try {
             setUserInfo(info);
         }
@@ -182,17 +183,7 @@ public class UserInfoDialog extends Dialog {
         return composite;
     }
 
-    /**
-     * Return the initial size of the dialog.
-     */
-    @Override
-    protected Point getInitialSize() {
-        return new Point(450, 300);
-    }
-
-    private void setUserInfo(UserInfo info) throws MalformedURLException {
-        profileFoto.setImage(
-                ImageUtils.resizeImage(new URL(info.getPhotoUrl()), 64, 64));
+    private void setUserInfo(UserInfo info) throws Exception {
         userName.setText(info.getDisplayName());
         level.setText(MessageFormat.format(Messages.dialog_UserInfo_level,
                 info.getLevel()));
@@ -202,6 +193,9 @@ public class UserInfoDialog extends Dialog {
                 info.getSilverMoney()));
         au.setText(MessageFormat.format(Messages.dialog_UserInfo_goldMoney,
                 info.getGoldMoney()));
+
+        profileFoto.setImage(
+                ImageUtils.resizeImage(new URL(info.getPhotoUrl()), 64, 64));
     }
 
     private Font createFont(FontData fontData) {
@@ -213,6 +207,10 @@ public class UserInfoDialog extends Dialog {
         GridData data = new GridData(SWT.FILL, SWT.TOP, true, false);
         data.horizontalSpan = 1;
         separator.setLayoutData(data);
+    }
+
+    private void nop(Composite parent) {
+        new Label(parent, SWT.NONE);
     }
 
 }

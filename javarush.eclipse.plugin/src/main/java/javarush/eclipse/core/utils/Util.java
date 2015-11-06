@@ -2,6 +2,7 @@ package javarush.eclipse.core.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Properties;
 
 import org.eclipse.core.resources.IFile;
@@ -30,6 +31,12 @@ public class Util {
         if (display == null)
             display = Display.getDefault();
         return display;
+    }
+
+    public static String toUtf8(String content) throws UnsupportedEncodingException {
+        if (content == null)
+            return null;
+        return new String(content.getBytes("UTF-8"), "UTF-8");
     }
 
     public static String convertStreamToString(final InputStream is) {

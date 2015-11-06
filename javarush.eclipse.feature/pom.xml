@@ -7,7 +7,7 @@
   <parent>
     <artifactId>javarush.eclipse</artifactId>
     <groupId>javarush-eclipse-plugin</groupId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.4-SNAPSHOT</version>
   </parent>
 
   <artifactId>javarush.eclipse.feature</artifactId>

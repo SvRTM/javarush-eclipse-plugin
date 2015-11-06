@@ -2,11 +2,14 @@ package javarush.eclipse.core.jobs;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
@@ -16,6 +19,7 @@ import javarush.eclipse.Messages;
 import javarush.eclipse.core.enums._ServiceResultErrorCode;
 import javarush.eclipse.core.utils.JdtUtils;
 import javarush.eclipse.core.utils.Util;
+import javarush.eclipse.core.utils.WorkspaceUtil;
 import javarush.eclipse.exceptions.BaseException;
 import javarush.eclipse.exceptions.SystemException;
 import javarush.eclipse.ws.client.ClassDataInfo;
@@ -55,19 +59,26 @@ public class LoadTaskProjectJob extends AJob {
                     .getResult();
 
             monitor.subTask(Messages.monitor_LoadTask_newTask);
-            ICompilationUnit mainCu = null;
             for (final ClassDataInfo classInfo : classDatas) {
                 final String _package = classInfo.getPackage();
-                final String file = classInfo.getFileName();
-                final String content = classInfo.getContentCode();
-
-                final ICompilationUnit cu = JdtUtils.creatPackage(_package,
-                        file, content, monitor);
-                if ("Solution".equals(file) || isContainMainMethod(cu))
-                    mainCu = cu;
+                final String fileName = classInfo.getFileName();
+                final String content = Util.toUtf8(classInfo.getContentCode());
+                final IPackageFragment fragment = JdtUtils
+                        .creatPackage(_package, monitor);
+                if (isJavaFile(fileName)) {
+                    final ICompilationUnit cu = JdtUtils.addClass(fileName,
+                            content, fragment, monitor);
+                    if ("Solution.java".equals(fileName)
+                        || isContainMainMethod(cu))
+                        openInEditor(cu);
+                }
+                else {
+                    IPath path = fragment.getResource().getFullPath()
+                            .append(fileName);
+                    WorkspaceUtil.createFile(path, content, monitor);
+                }
             }
-            if (mainCu != null)
-                openInEditor(mainCu);
+
             monitor.worked(34);
 
             return Status.OK_STATUS;
@@ -97,12 +108,12 @@ public class LoadTaskProjectJob extends AJob {
         return false;
     }
 
-    private void openInEditor(final ICompilationUnit cu) {
+    private void openInEditor(final IJavaElement element) {
         Util.getDisplay().syncExec(new Runnable() {
             @Override
             public void run() {
                 try {
-                    JavaUI.openInEditor(cu);
+                    JavaUI.openInEditor(element);
                 }
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
@@ -111,5 +122,14 @@ public class LoadTaskProjectJob extends AJob {
                 }
             }
         });
+    }
+
+    private boolean isJavaFile(String file) {
+        if (file == null)
+            return false;
+        int i = file.lastIndexOf('.');
+        if (i > 0)
+            return "java".equals(file.substring(i + 1));
+        return false;
     }
 }

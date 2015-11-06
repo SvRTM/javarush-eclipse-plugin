@@ -51,15 +51,20 @@ public class JdtUtils {
                 project.getFullPath().append(buildFolder), monitor);
     }
 
-    public static ICompilationUnit creatPackage(String _package,
-                                                String fileName, String content,
-                                                IProgressMonitor monitor) throws CoreException,
-                                                                          UnsupportedEncodingException {
+    public static IPackageFragment creatPackage(String _package,
+                                                IProgressMonitor monitor) throws CoreException {
         IPackageFragmentRoot packageRoot = getSourceFolder(monitor);
         IPackageFragment fragment = packageRoot.createPackageFragment(_package,
                 true, monitor);
-        return fragment.createCompilationUnit(fileName,
-                new String(content.getBytes("UTF-8"), "UTF-8"), false, monitor);
+        return fragment;
+    }
+
+    public static ICompilationUnit addClass(String fileName, String content,
+                                            IPackageFragment fragment,
+                                            IProgressMonitor monitor) throws JavaModelException,
+                                                                      UnsupportedEncodingException {
+        return fragment.createCompilationUnit(fileName, content, false,
+                monitor);
     }
 
     public static IJavaElement getActiveEditorJavaInput() {

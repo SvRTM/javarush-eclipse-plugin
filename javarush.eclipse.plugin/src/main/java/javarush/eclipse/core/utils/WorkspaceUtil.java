@@ -79,7 +79,7 @@ public class WorkspaceUtil {
         return createFile(new Path(relativePath), contents, monitor);
     }
 
-    public static IFile createFile(IPath relativePath, final String contents,
+    public static IFile createFile(IPath relativePath, final String content,
                                    IProgressMonitor monitor) throws CoreException {
         final IFile file = getRoot().getFile(relativePath);
         getWorkspace().run(new IWorkspaceRunnable() {
@@ -87,7 +87,7 @@ public class WorkspaceUtil {
             public void run(IProgressMonitor monitor) throws CoreException {
                 create(file.getParent(), monitor);
                 file.delete(true, monitor);
-                file.create(new ByteArrayInputStream(contents.getBytes()), true,
+                file.create(new ByteArrayInputStream(content.getBytes()), true,
                         monitor);
                 monitor.worked(1);
             }
