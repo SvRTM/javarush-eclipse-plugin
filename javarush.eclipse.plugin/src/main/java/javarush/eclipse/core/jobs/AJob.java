@@ -29,6 +29,6 @@ public abstract class AJob extends Job {
     }
 
     protected void resetSession() {
-        SessionSingleton.INSTANCE.setId(null);
+        SessionSingleton.INSTANCE.reset();
     }
 }

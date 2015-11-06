@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Javarush-Eclipse Plugin
 Bundle-SymbolicName: javarush.eclipse.plugin;singleton:=true
-Bundle-Version: 1.0.2.qualifier
+Bundle-Version: 1.0.3.qualifier
 Bundle-Activator: javarush.eclipse.JavarushEclipsePlugin
 Require-Bundle: org.eclipse.jdt.ui,
  org.eclipse.jdt.core,

@@ -129,7 +129,7 @@ public class UserInfoDialog extends Dialog {
                     setUserInfo(info);
                 }
                 catch (Exception e) {
-                    SessionSingleton.INSTANCE.setId(null);
+                    SessionSingleton.INSTANCE.reset();
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
                     JavarushEclipsePlugin.logErrorWithMsg(e);

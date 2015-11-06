@@ -30,6 +30,7 @@ import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.Messages;
 import javarush.eclipse.core.Constants;
 import javarush.eclipse.core.utils.JdtUtils;
+import javarush.eclipse.core.utils.SessionSingleton;
 import javarush.eclipse.core.utils.Util;
 import javarush.eclipse.core.utils.WorkspaceUtil;
 import javarush.eclipse.exceptions.BaseException;
@@ -79,6 +80,7 @@ public class MainPrefPage extends PreferencePage
     @Override
     public boolean performOk() {
         saveToStore();
+        SessionSingleton.INSTANCE.reset();
         return true;
     }
 

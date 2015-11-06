@@ -29,6 +29,11 @@ public enum SessionSingleton {
             }
         }
 
+        @Override
+        public void reset() {
+            setId(null);
+        }
+
         private boolean isTimeOver(int lifetime) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(dateCreate);
@@ -36,10 +41,13 @@ public enum SessionSingleton {
 
             return calendar.compareTo(Calendar.getInstance()) == -1;
         }
+
     };
 
     public abstract void setId(String sessionId);
 
     public abstract String getId(int lifetime);
+
+    public abstract void reset();
 
 }
