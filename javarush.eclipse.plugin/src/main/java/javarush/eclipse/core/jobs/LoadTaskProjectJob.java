@@ -84,8 +84,7 @@ public class LoadTaskProjectJob extends AJob {
             return Status.OK_STATUS;
         }
         catch (final Exception e) {
-            resetSession();
-            return JavarushEclipsePlugin.status(e);
+            return showBusinessError(e);
         }
         finally {
             logout();
@@ -118,7 +117,10 @@ public class LoadTaskProjectJob extends AJob {
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
+
+                    JavarushEclipsePlugin.logError(e);
+                    JavarushEclipsePlugin.errorMsg(Messages.title,
+                            e.getMessage());
                 }
             }
         });

@@ -2,7 +2,7 @@
 <feature
       id="javarush.eclipse.feature"
       label="Javarush-Eclipse"
-      version="1.0.4.qualifier">
+      version="1.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       Javarush-Eclipse plugin

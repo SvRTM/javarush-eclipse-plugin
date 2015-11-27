@@ -78,20 +78,28 @@ public class JavarushEclipsePlugin extends AbstractUIPlugin {
         return imageDescriptorFromPlugin(getId(), imagePath);
     }
 
-    public static void errorMsg(Throwable throwable) {
-        String message = ERROR + "\n" + throwable.getMessage();
-        MessageDialog.openError(WorkspaceUtil.getShell(), Messages.title,
-                message);
+    public static void showMsg(final int kind, final String title,
+                               final String msg) {
+        MessageDialog.open(kind, WorkspaceUtil.getShell(), title, msg,
+                MessageDialog.NONE);
     }
 
-    public static void warnMsg(String message) {
+    public static void errorMsg(String title, String msg) {
+        MessageDialog.openError(WorkspaceUtil.getShell(), title, msg);
+    }
+
+    public static void warnMsg(String title, String message) {
         MessageDialog.openWarning(WorkspaceUtil.getShell(), Messages.title,
                 message);
     }
 
-    public static IStatus status(Throwable throwable) {
+    public static IStatus statusError(Throwable throwable) {
         return new Status(IStatus.ERROR, getId(), IStatus.ERROR,
                 throwable.toString(), throwable);
+    }
+
+    public static IStatus statusWarning(String msg) {
+        return new Status(IStatus.WARNING, getId(), IStatus.WARNING, msg, null);
     }
 
     /**
@@ -101,18 +109,7 @@ public class JavarushEclipsePlugin extends AbstractUIPlugin {
      *            The {@link Throwable} to log
      */
     public static final void logError(final Throwable throwable) {
-        log(status(throwable));
-    }
-
-    /**
-     * Utility method to log an error represented by/in {@link Throwable}
-     *
-     * @param throwable
-     *            The {@link Throwable} to log
-     */
-    public static final void logErrorWithMsg(final Throwable throwable) {
-        logError(throwable);
-        errorMsg(throwable);
+        log(statusError(throwable));
     }
 
     /**
@@ -122,7 +119,6 @@ public class JavarushEclipsePlugin extends AbstractUIPlugin {
      *            The text to be logged
      */
     public static final void logInfo(final String message) {
-        // if (INFO)
         log(new Status(IStatus.INFO, getId(), IStatus.INFO, message, null));
     }
 
@@ -135,8 +131,7 @@ public class JavarushEclipsePlugin extends AbstractUIPlugin {
     public static final void logDebug(final String message) {
         // HACKTAG: Dont know why - but we need to do a null check (for 3.1)
         if (getDefault() != null && getDefault().isDebugging())
-            log(new Status(IStatus.WARNING, getId(), IStatus.WARNING, message,
-                    null));
+            log(statusWarning(message));
     }
 
     /**

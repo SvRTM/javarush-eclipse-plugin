@@ -290,7 +290,8 @@ public class TaskListView extends ViewPart implements Constants {
                             Messages.error_TaskList_emptyKeyTask);
 
                 if (!NotActiveTasks.LIST.isActive(data.getStatus())) {
-                    JavarushEclipsePlugin.warnMsg(data.getStatus().getText());
+                    JavarushEclipsePlugin.warnMsg(Messages.title,
+                            data.getStatus().getText());
                     return;
                 }
 

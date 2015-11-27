@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.Messages;
 import javarush.eclipse.core.enums._ServiceResultErrorCode;
 import javarush.eclipse.core.utils.Util;
@@ -41,13 +40,12 @@ public class UserInfoJob extends AJob {
             monitor.worked(50);
 
             UserInfo info = res.getResult();
-            showMsg(info);
+            showUserInfo(info);
 
             return Status.OK_STATUS;
         }
         catch (final Exception e) {
-            resetSession();
-            return JavarushEclipsePlugin.status(e);
+            return showBusinessError(e);
         }
         finally {
             logout();
@@ -55,7 +53,7 @@ public class UserInfoJob extends AJob {
         }
     }
 
-    private void showMsg(final UserInfo info) {
+    private void showUserInfo(final UserInfo info) {
         Util.getDisplay().asyncExec(new Runnable() {
             @Override
             public void run() {

@@ -5,12 +5,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 
-import javarush.eclipse.JavarushEclipsePlugin;
 import javarush.eclipse.Messages;
 import javarush.eclipse.core.enums._ServiceResultErrorCode;
-import javarush.eclipse.core.utils.Util;
-import javarush.eclipse.core.utils.WorkspaceUtil;
-import javarush.eclipse.exceptions.BaseException;
 import javarush.eclipse.exceptions.SystemException;
 import javarush.eclipse.ws.client.ServiceResultErrorCode;
 import javarush.eclipse.ws.client.ServiceResultOfBoolean;
@@ -42,35 +38,18 @@ public class ResetProgressTaskJob extends AJob {
                 throw new SystemException(_ServiceResultErrorCode.UNKNOWN_ERROR
                         .fromValue(res.getErrorCode()).getDescription());
             monitor.worked(50);
-            showMsg();
+
+            showMsg(MessageDialog.INFORMATION, Messages.title_ResetProgress,
+                    Messages.info_ResetProgress_success);
 
             return Status.OK_STATUS;
         }
         catch (Exception e) {
-            resetSession();
-            return JavarushEclipsePlugin.status(e);
+            return showBusinessError(e);
         }
         finally {
             logout();
             monitor.done();
         }
-    }
-
-    private void showMsg() {
-        Util.getDisplay().syncExec(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    MessageDialog.openInformation(WorkspaceUtil.getShell(),
-                            Messages.title_ResetProgress,
-                            Messages.info_ResetProgress_success);
-                }
-                catch (Exception e) {
-                    if (!(e instanceof BaseException))
-                        e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
-                }
-            }
-        });
     }
 }

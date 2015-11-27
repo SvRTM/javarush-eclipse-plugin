@@ -107,8 +107,7 @@ public class CheckTaskJob extends AJob {
             return Status.OK_STATUS;
         }
         catch (final Exception e) {
-            resetSession();
-            return JavarushEclipsePlugin.status(e);
+            return showBusinessError(e);
         }
         finally {
             logout();
@@ -164,23 +163,6 @@ public class CheckTaskJob extends AJob {
         return info;
     }
 
-    private void showMsg(final int kind, final String title, final String msg) {
-        Util.getDisplay().syncExec(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    MessageDialog.open(kind, WorkspaceUtil.getShell(), title,
-                            msg, MessageDialog.NONE);
-                }
-                catch (Exception e) {
-                    if (!(e instanceof BaseException))
-                        e = new SystemException(e);
-                    throw (BaseException) e;
-                }
-            }
-        });
-    }
-
     private void reloadTaskList() {
         Util.getDisplay().syncExec(new Runnable() {
             @Override
@@ -192,7 +174,10 @@ public class CheckTaskJob extends AJob {
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
+
+                    JavarushEclipsePlugin.logError(e);
+                    JavarushEclipsePlugin.errorMsg(Messages.title,
+                            e.getMessage());
                 }
             }
         });

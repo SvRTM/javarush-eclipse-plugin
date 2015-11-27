@@ -82,7 +82,8 @@ public class TaskListJob extends AJob {
             sortTaskByLevel(taskInfos);
 
             if (taskInfos.size() == 0) {
-                openInformation();
+                showMsg(MessageDialog.INFORMATION, Messages.title_TaskList,
+                        Messages.info_TaskList_noAvailableTasks);
                 return Status.OK_STATUS;
             }
 
@@ -114,13 +115,12 @@ public class TaskListJob extends AJob {
             }
             monitor.worked(25);
 
-            ui(taskBeans);
+            updateTaskList(taskBeans);
 
             return Status.OK_STATUS;
         }
         catch (final Exception e) {
-            resetSession();
-            return JavarushEclipsePlugin.status(e);
+            return showBusinessError(e);
         }
         finally {
             logout();
@@ -128,7 +128,7 @@ public class TaskListJob extends AJob {
         }
     }
 
-    private void ui(final TaskBean[] taskBeans) {
+    private void updateTaskList(final TaskBean[] taskBeans) {
         Util.getDisplay().asyncExec(new Runnable() {
             @Override
             public void run() {
@@ -141,25 +141,10 @@ public class TaskListJob extends AJob {
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
-                }
-            }
-        });
-    }
 
-    private void openInformation() {
-        Util.getDisplay().syncExec(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    MessageDialog.openInformation(WorkspaceUtil.getShell(),
-                            Messages.title_TaskList,
-                            Messages.info_TaskList_noAvailableTasks);
-                }
-                catch (Exception e) {
-                    if (!(e instanceof BaseException))
-                        e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
+                    JavarushEclipsePlugin.logError(e);
+                    JavarushEclipsePlugin.errorMsg(Messages.title,
+                            e.getMessage());
                 }
             }
         });
@@ -180,7 +165,10 @@ public class TaskListJob extends AJob {
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
+
+                    JavarushEclipsePlugin.logError(e);
+                    JavarushEclipsePlugin.errorMsg(Messages.title,
+                            e.getMessage());
                 }
             }
         });

@@ -144,13 +144,15 @@ public class MainPrefPage extends PreferencePage
                         kind = MessageDialog.INFORMATION;
                         msg = Messages.info_pref_MainPage_projectCreate;
                     }
-                    MessageDialog.open(kind, getShell(), Messages.title, msg,
-                            0);
+                    JavarushEclipsePlugin.showMsg(kind, Messages.title, msg);
                 }
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
+
+                    JavarushEclipsePlugin.logError(e);
+                    JavarushEclipsePlugin.errorMsg(Messages.title,
+                            e.getMessage());
                 }
             }
         });
@@ -178,7 +180,10 @@ public class MainPrefPage extends PreferencePage
                 catch (Exception e) {
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
+
+                    JavarushEclipsePlugin.logError(e);
+                    JavarushEclipsePlugin.errorMsg(Messages.title,
+                            e.getMessage());
                 }
             }
         });
@@ -209,8 +214,9 @@ public class MainPrefPage extends PreferencePage
         try {
             return WorkspaceUtil.isProjectExists(projectName);
         }
-        catch (CoreException exc) {
-            JavarushEclipsePlugin.logErrorWithMsg(exc);
+        catch (CoreException e) {
+            JavarushEclipsePlugin.logError(e);
+            JavarushEclipsePlugin.errorMsg(Messages.title, e.getMessage());
             return true;
         }
     }
@@ -240,7 +246,9 @@ public class MainPrefPage extends PreferencePage
         catch (Exception e) {
             if (!(e instanceof BaseException))
                 e = new SystemException(e);
-            JavarushEclipsePlugin.logErrorWithMsg(e);
+
+            JavarushEclipsePlugin.logError(e);
+            JavarushEclipsePlugin.errorMsg(Messages.title, e.getMessage());
         }
         return key == null ? "" : key.trim();
     }

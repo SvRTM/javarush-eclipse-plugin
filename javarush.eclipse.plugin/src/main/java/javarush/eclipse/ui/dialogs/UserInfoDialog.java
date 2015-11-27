@@ -131,7 +131,10 @@ public class UserInfoDialog extends Dialog {
                     SessionSingleton.INSTANCE.reset();
                     if (!(e instanceof BaseException))
                         e = new SystemException(e);
-                    JavarushEclipsePlugin.logErrorWithMsg(e);
+
+                    JavarushEclipsePlugin.logError(e);
+                    JavarushEclipsePlugin.errorMsg(Messages.title,
+                            e.getMessage());
                 }
                 finally {
                     if (wsClient != null)
@@ -158,7 +161,9 @@ public class UserInfoDialog extends Dialog {
         catch (Exception e) {
             if (!(e instanceof BaseException))
                 e = new SystemException(e);
-            JavarushEclipsePlugin.logErrorWithMsg(e);
+
+            JavarushEclipsePlugin.logError(e);
+            JavarushEclipsePlugin.errorMsg(Messages.title, e.getMessage());
         }
 
         return container;

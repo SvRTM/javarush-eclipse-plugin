@@ -79,6 +79,8 @@ public class Messages extends NLS {
     public static String info_CheckTask_errorCompilation;
     public static String info_CheckTask_statistics;
 
+    public static String title_errorMessage;
+
     public static String error_Login_secKeyEmpty;
     public static String error_Login_sessionIdEmpty;
     public static String error_Login_oldVersion;
@@ -148,5 +150,4 @@ public class Messages extends NLS {
     public static String ValidationStatus_SecurityError;
     public static String ValidationStatus_TaskSolvedError;
     public static String ValidationStatus_TaskUnavailableError;
-    public static String MainPrefPage_text_text;
 }
