@@ -20,10 +20,11 @@ import javarush.eclipse.security.exceptoins.AuthorizationException.Action;
 import javarush.eclipse.ws.client.IJarCommonService;
 import javarush.eclipse.ws.client.ServiceResultErrorCode;
 import javarush.eclipse.ws.client.ServiceResultOfBoolean;
-import javarush.eclipse.ws.client.ServiceResultOfString;
+import javarush.eclipse.ws.client.ServiceResultOfSignInInfo;
+import javarush.eclipse.ws.client.SignInInfo;
 
 public class Authorization {
-    private static int API_VERSION = 1;
+    private static int API_VERSION = 2;
 
     private final IJarCommonService client;
 
@@ -43,12 +44,13 @@ public class Authorization {
         if (sessionId != null)
             return sessionId;
 
-        ServiceResultOfString result = client.signInViaSecretKey(API_VERSION,
-                secretKey);
+        ServiceResultOfSignInInfo result = client
+                .signInViaSecretKey(API_VERSION, secretKey);
 
         final ServiceResultErrorCode errorCode = result.getErrorCode();
         if (SUCCESS == errorCode) {
-            sessionId = result.getResult();
+            final SignInInfo signInInfo = result.getResult();
+            sessionId = signInInfo.getSession();
             if (sessionId == null)
                 throw new AuthorizationException(Action.LOGIN,
                         Messages.error_Login_sessionIdEmpty);

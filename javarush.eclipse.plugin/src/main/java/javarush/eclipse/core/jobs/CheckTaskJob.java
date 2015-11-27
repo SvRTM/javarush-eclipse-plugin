@@ -1,8 +1,6 @@
 package javarush.eclipse.core.jobs;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -30,6 +28,7 @@ import javarush.eclipse.exceptions.BaseException;
 import javarush.eclipse.exceptions.BusinessException;
 import javarush.eclipse.exceptions.SystemException;
 import javarush.eclipse.ws.client.ClassDataInfo;
+import javarush.eclipse.ws.client.ClassDataInfoList;
 import javarush.eclipse.ws.client.CompilationStatus;
 import javarush.eclipse.ws.client.ServiceResultErrorCode;
 import javarush.eclipse.ws.client.ServiceResultOfValidationInfo;
@@ -56,7 +55,7 @@ public class CheckTaskJob extends AJob {
 
             monitor.subTask(Messages.monitor_CheckTask_taskNumber);
             final String[] taskNumber = new String[1];
-            final List<ClassDataInfo> classDatas = new ArrayList<ClassDataInfo>();
+            final ClassDataInfoList classDatas = new ClassDataInfoList();
             prepareData(taskNumber, classDatas, monitor);
             if (monitor.isCanceled())
                 return Status.CANCEL_STATUS;
@@ -118,7 +117,7 @@ public class CheckTaskJob extends AJob {
     }
 
     private void prepareData(final String[] taskNumber,
-                             final List<ClassDataInfo> classDatas,
+                             final ClassDataInfoList classDatas,
                              final IProgressMonitor monitor) throws CoreException {
 
         final IJavaElement element = JdtUtils.getActiveEditorJavaInput();
@@ -139,7 +138,7 @@ public class CheckTaskJob extends AJob {
     }
 
     private void prepareClassDataInfoList(final IContainer container,
-                                          final List<ClassDataInfo> classDatas,
+                                          final ClassDataInfoList classDatas,
                                           final IProgressMonitor monitor) throws CoreException {
         WorkspaceUtil.getWorkspace().run(new IWorkspaceRunnable() {
             @Override
@@ -149,7 +148,8 @@ public class CheckTaskJob extends AJob {
                         prepareClassDataInfoList((IContainer) r, classDatas,
                                 monitor);
                     else if (r instanceof IFile) {
-                        classDatas.add(prepareClassDataInfo((IFile) r));
+                        classDatas.getList()
+                                .add(prepareClassDataInfo((IFile) r));
                         monitor.worked(1);
                     }
             }
